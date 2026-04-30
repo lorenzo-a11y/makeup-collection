@@ -10,7 +10,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-rose-dark" />
-          <span className="font-display italic text-xl text-rose-deep tracking-wide">
+          <span className="font-display italic text-base sm:text-xl text-rose-deep tracking-wide">
             Ma Collection Beauté
           </span>
         </Link>

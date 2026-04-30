@@ -34,7 +34,7 @@ export default function Gallery({ products, categories }: Props) {
     return Array.from(set).sort()
   }, [products])
 
-  const activeFiltersCount = [filterBrand, filterStars, filterPriceMax].filter(Boolean).length
+  const activeFiltersCount = [filterBrand, filterStars, filterPriceMax, filterStatus !== 'active' ? filterStatus : ''].filter(Boolean).length
 
   function selectMain(id: string | null) {
     setActiveMain(id)
@@ -71,6 +71,7 @@ export default function Gallery({ products, categories }: Props) {
     setFilterBrand('')
     setFilterStars(null)
     setFilterPriceMax('')
+    setFilterStatus('active')
   }
 
   return (
@@ -125,23 +126,6 @@ export default function Gallery({ products, categories }: Props) {
           </button>
         </div>
 
-        {/* Filtre statut épuisé */}
-        <div className="flex gap-2 justify-center mb-5">
-          {(['active', 'all', 'empty'] as const).map(s => (
-            <button
-              key={s}
-              onClick={() => setFilterStatus(s)}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                filterStatus === s
-                  ? 'bg-rose-deep text-white border-rose-deep'
-                  : 'bg-white text-mauve border-border hover:border-rose hover:text-rose-deep'
-              }`}
-            >
-              {s === 'active' ? 'Actifs' : s === 'empty' ? 'Épuisés' : 'Tous'}
-            </button>
-          ))}
-        </div>
-
         {/* Panneau filtres avancés */}
         {showFilters && (
           <div className="max-w-2xl mx-auto mb-5 bg-white rounded-2xl border border-border p-5 flex flex-wrap gap-4">
@@ -186,6 +170,25 @@ export default function Gallery({ products, categories }: Props) {
                 placeholder="Ex : 50"
                 className="w-full px-3 py-2 rounded-xl border border-border text-sm text-plum focus:outline-none focus:border-rose"
               />
+            </div>
+            <div className="w-full">
+              <label className="block text-xs font-medium text-mauve uppercase tracking-widest mb-1.5">Statut</label>
+              <div className="flex gap-2">
+                {(['active', 'all', 'empty'] as const).map(s => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setFilterStatus(s)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                      filterStatus === s
+                        ? 'bg-rose-deep text-white border-rose-deep'
+                        : 'bg-white text-mauve border-border hover:border-rose hover:text-rose-deep'
+                    }`}
+                  >
+                    {s === 'active' ? 'Actifs' : s === 'empty' ? 'Épuisés' : 'Tous'}
+                  </button>
+                ))}
+              </div>
             </div>
             {activeFiltersCount > 0 && (
               <button
