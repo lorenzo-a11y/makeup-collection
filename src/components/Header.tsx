@@ -17,7 +17,7 @@ export default function Header() {
           href="/admin"
           className="text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal"
         >
-          Admin
+          Cristina
         </Link>
       </div>
     </header>

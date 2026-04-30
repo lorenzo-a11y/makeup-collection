@@ -36,7 +36,7 @@ export default function AdminDashboard({ products, categories }: Props) {
     <div className="min-h-screen bg-cream">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
-          <h1 className="font-display italic text-3xl text-rose-deep">Admin</h1>
+          <h1 className="font-display italic text-3xl text-rose-deep">Cristina</h1>
           <div className="flex items-center gap-2 flex-wrap">
             <Link
               href="/"

@@ -15,7 +15,7 @@ export default function LoginForm() {
         <div className="text-center mb-8">
           <Sparkles className="w-8 h-8 text-rose-dark mx-auto mb-3" />
           <h1 className="font-display italic text-3xl text-rose-deep">
-            Espace Admin
+            Espace Cristina
           </h1>
           <p className="text-sm text-mauve mt-1">Ma Collection Beauté</p>
         </div>
