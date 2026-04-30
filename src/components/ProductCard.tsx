@@ -24,11 +24,11 @@ export default function ProductCard({ product, onClick }: Props) {
       <div className={`bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 border ${product.is_empty ? 'border-border opacity-60' : 'border-border'}`}>
         <div className="relative">
           {product.image_url ? (
-            <div className="overflow-hidden">
+            <div className="overflow-hidden [will-change:transform]">
               <img
                 src={product.image_url}
                 alt={product.name}
-                className="w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full object-cover group-hover:scale-105 transition-transform duration-500 [backface-visibility:hidden]"
                 loading="lazy"
               />
             </div>
