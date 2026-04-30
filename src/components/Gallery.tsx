@@ -1,10 +1,21 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { SlidersHorizontal, X, Star, Heart } from 'lucide-react'
+import { SlidersHorizontal, X, Star, Heart, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import type { Category, Product } from '@/lib/types'
 import ProductCard from './ProductCard'
 import ProductModal from './ProductModal'
+
+type SortKey = 'name' | 'price' | 'brand' | 'category' | 'rating' | 'created_at'
+
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: 'name',       label: 'Nom' },
+  { key: 'brand',      label: 'Marque' },
+  { key: 'category',   label: 'Catégorie' },
+  { key: 'price',      label: 'Prix' },
+  { key: 'rating',     label: 'Note' },
+  { key: 'created_at', label: 'Date' },
+]
 
 interface Props {
   products: Product[]
@@ -22,6 +33,8 @@ export default function Gallery({ products, categories }: Props) {
   const [filterBrand, setFilterBrand] = useState('')
   const [filterStars, setFilterStars] = useState<number | null>(null)
   const [filterPriceMax, setFilterPriceMax] = useState('')
+  const [sortBy, setSortBy] = useState<SortKey | null>(null)
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
   const mainCategories = useMemo(() => categories.filter(c => !c.parent_id), [categories])
   const subCategories = useMemo(
@@ -39,6 +52,16 @@ export default function Gallery({ products, categories }: Props) {
   function selectMain(id: string | null) {
     setActiveMain(id)
     setActiveSub(null)
+  }
+
+  function handleSort(key: SortKey) {
+    if (sortBy === key) {
+      if (sortDir === 'asc') setSortDir('desc')
+      else { setSortBy(null); setSortDir('asc') }
+    } else {
+      setSortBy(key)
+      setSortDir('asc')
+    }
   }
 
   const filtered = useMemo(() => {
@@ -67,6 +90,26 @@ export default function Gallery({ products, categories }: Props) {
     return list
   }, [products, activeMain, activeSub, search, showFavsOnly, filterStatus, filterBrand, filterStars, filterPriceMax, categories])
 
+  const sorted = useMemo(() => {
+    if (!sortBy) return filtered
+    return [...filtered].sort((a, b) => {
+      let valA: string | number, valB: string | number
+
+      switch (sortBy) {
+        case 'name':       valA = a.name.toLowerCase();                    valB = b.name.toLowerCase();                    break
+        case 'brand':      valA = a.brand.toLowerCase();                   valB = b.brand.toLowerCase();                   break
+        case 'category':   valA = a.category?.name.toLowerCase() ?? '';    valB = b.category?.name.toLowerCase() ?? '';    break
+        case 'price':      valA = a.price ?? Infinity;                     valB = b.price ?? Infinity;                     break
+        case 'rating':     valA = a.rating ?? 0;                           valB = b.rating ?? 0;                           break
+        case 'created_at': valA = a.created_at;                            valB = b.created_at;                            break
+      }
+
+      if (valA < valB) return sortDir === 'asc' ? -1 : 1
+      if (valA > valB) return sortDir === 'asc' ? 1 : -1
+      return 0
+    })
+  }, [filtered, sortBy, sortDir])
+
   function clearFilters() {
     setFilterBrand('')
     setFilterStars(null)
@@ -82,7 +125,7 @@ export default function Gallery({ products, categories }: Props) {
             Ma Collection
           </h1>
           <p className="text-mauve text-sm">
-            {filtered.length} produit{filtered.length !== 1 ? 's' : ''}
+            {sorted.length} produit{sorted.length !== 1 ? 's' : ''}
           </p>
         </div>
 
@@ -104,7 +147,7 @@ export default function Gallery({ products, categories }: Props) {
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
-          <span className="hidden sm:inline">Filtres</span>
+            <span className="hidden sm:inline">Filtres</span>
             {activeFiltersCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-gold text-white text-xs rounded-full flex items-center justify-center font-bold">
                 {activeFiltersCount}
@@ -112,7 +155,6 @@ export default function Gallery({ products, categories }: Props) {
             )}
           </button>
 
-          {/* Bouton Mes favoris */}
           <button
             onClick={() => setShowFavsOnly(v => !v)}
             className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-3 rounded-full border text-sm font-medium transition-all ${
@@ -201,7 +243,7 @@ export default function Gallery({ products, categories }: Props) {
           </div>
         )}
 
-        {/* Catégories principales — scroll horizontal sur mobile */}
+        {/* Catégories principales */}
         <div className="mb-3 -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="flex gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center scrollbar-hide">
             <button
@@ -232,7 +274,7 @@ export default function Gallery({ products, categories }: Props) {
 
         {/* Sous-catégories */}
         {activeMain !== null && subCategories.length > 0 && (
-          <div className="mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="mb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
             <div className="flex gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center scrollbar-hide">
               {subCategories.map(cat => (
                 <button
@@ -251,15 +293,50 @@ export default function Gallery({ products, categories }: Props) {
           </div>
         )}
 
+        {/* Barre de tri */}
+        <div className="flex items-center gap-2 flex-wrap mb-6">
+          <span className="text-xs text-mauve uppercase tracking-widest font-medium flex-shrink-0">Trier :</span>
+          {SORT_OPTIONS.map(({ key, label }) => {
+            const active = sortBy === key
+            return (
+              <button
+                key={key}
+                onClick={() => handleSort(key)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                  active
+                    ? 'bg-rose-deep text-white border-rose-deep'
+                    : 'bg-white text-mauve border-border hover:border-rose hover:text-rose-deep'
+                }`}
+              >
+                {label}
+                {active
+                  ? sortDir === 'asc'
+                    ? <ChevronUp className="w-3 h-3" />
+                    : <ChevronDown className="w-3 h-3" />
+                  : <ChevronsUpDown className="w-3 h-3 opacity-40" />
+                }
+              </button>
+            )
+          })}
+          {sortBy && (
+            <button
+              onClick={() => { setSortBy(null); setSortDir('asc') }}
+              className="flex items-center gap-1 text-xs text-mauve hover:text-rose-deep transition-colors"
+            >
+              <X className="w-3 h-3" /> Effacer
+            </button>
+          )}
+        </div>
+
         {/* Grille */}
-        {filtered.length === 0 ? (
+        {sorted.length === 0 ? (
           <div className="text-center py-24">
             <span className="text-5xl block mb-4">✨</span>
             <p className="font-display italic text-xl text-mauve">Aucun produit trouvé</p>
           </div>
         ) : (
           <div className="masonry">
-            {filtered.map(product => (
+            {sorted.map(product => (
               <ProductCard
                 key={product.id}
                 product={product}
