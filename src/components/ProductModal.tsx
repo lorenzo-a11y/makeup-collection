@@ -1,15 +1,17 @@
 'use client'
 
 import { useEffect } from 'react'
-import { X, Star, Euro } from 'lucide-react'
+import { X, Star, Euro, Pencil } from 'lucide-react'
 import type { Product } from '@/lib/types'
 
 interface Props {
   product: Product | null
   onClose: () => void
+  isAdmin?: boolean
+  onEdit?: (product: Product) => void
 }
 
-export default function ProductModal({ product, onClose }: Props) {
+export default function ProductModal({ product, onClose, isAdmin, onEdit }: Props) {
   useEffect(() => {
     if (!product) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
@@ -39,7 +41,6 @@ export default function ProductModal({ product, onClose }: Props) {
         </button>
 
         <div className="overflow-y-auto flex-1">
-          {/* Photo grande et cliquable */}
           {product.image_url && (
             <div className="w-full bg-petal">
               <img
@@ -60,9 +61,22 @@ export default function ProductModal({ product, onClose }: Props) {
             <p className="text-xs uppercase tracking-widest text-mauve font-medium mb-1">
               {product.brand}
             </p>
-            <h2 className="font-display text-2xl sm:text-3xl text-plum mb-3 leading-tight">
-              {product.name}
-            </h2>
+
+            {/* Nom + bouton Modifier (admin seulement) */}
+            <div className="flex items-start gap-3 mb-3">
+              <h2 className="font-display text-2xl sm:text-3xl text-plum leading-tight flex-1">
+                {product.name}
+              </h2>
+              {isAdmin && onEdit && (
+                <button
+                  onClick={() => onEdit(product)}
+                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-petal text-rose-deep text-xs font-medium hover:bg-rose hover:text-white transition-colors mt-1"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  Modifier
+                </button>
+              )}
+            </div>
 
             <div className="flex items-center gap-4 mb-4">
               {product.rating && (

@@ -5,8 +5,10 @@ import { SlidersHorizontal, X, Star, Heart, ChevronUp, ChevronDown, ChevronsUpDo
 import type { Category, Product } from '@/lib/types'
 import ProductCard from './ProductCard'
 import ProductModal from './ProductModal'
+import ProductForm from './admin/ProductForm'
 
 type SortKey = 'name' | 'price' | 'brand' | 'category' | 'rating' | 'created_at'
+type SortItem = { key: SortKey; dir: 'asc' | 'desc' }
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'name',       label: 'Nom' },
@@ -17,15 +19,28 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'created_at', label: 'Date' },
 ]
 
+function getSortValue(p: Product, key: SortKey): string | number {
+  switch (key) {
+    case 'name':       return p.name.toLowerCase()
+    case 'brand':      return p.brand.toLowerCase()
+    case 'category':   return p.category?.name.toLowerCase() ?? ''
+    case 'price':      return p.price ?? Infinity
+    case 'rating':     return p.rating ?? 0
+    case 'created_at': return p.created_at
+  }
+}
+
 interface Props {
   products: Product[]
   categories: Category[]
+  isAdmin?: boolean
 }
 
-export default function Gallery({ products, categories }: Props) {
+export default function Gallery({ products, categories, isAdmin }: Props) {
   const [activeMain, setActiveMain] = useState<string | null>(null)
   const [activeSub, setActiveSub] = useState<string | null>(null)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [editProduct, setEditProduct] = useState<Product | null>(null)
   const [search, setSearch] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [showFavsOnly, setShowFavsOnly] = useState(false)
@@ -33,8 +48,7 @@ export default function Gallery({ products, categories }: Props) {
   const [filterBrand, setFilterBrand] = useState('')
   const [filterStars, setFilterStars] = useState<number | null>(null)
   const [filterPriceMax, setFilterPriceMax] = useState('')
-  const [sortBy, setSortBy] = useState<SortKey | null>(null)
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
+  const [sorts, setSorts] = useState<SortItem[]>([])
 
   const mainCategories = useMemo(() => categories.filter(c => !c.parent_id), [categories])
   const subCategories = useMemo(
@@ -55,13 +69,16 @@ export default function Gallery({ products, categories }: Props) {
   }
 
   function handleSort(key: SortKey) {
-    if (sortBy === key) {
-      if (sortDir === 'asc') setSortDir('desc')
-      else { setSortBy(null); setSortDir('asc') }
-    } else {
-      setSortBy(key)
-      setSortDir('asc')
-    }
+    setSorts(prev => {
+      const idx = prev.findIndex(s => s.key === key)
+      if (idx === -1) return [...prev, { key, dir: 'asc' }]
+      if (prev[idx].dir === 'asc') return prev.map((s, i) => i === idx ? { ...s, dir: 'desc' } : s)
+      return prev.filter((_, i) => i !== idx)
+    })
+  }
+
+  function removeSort(key: SortKey) {
+    setSorts(prev => prev.filter(s => s.key !== key))
   }
 
   const filtered = useMemo(() => {
@@ -91,30 +108,28 @@ export default function Gallery({ products, categories }: Props) {
   }, [products, activeMain, activeSub, search, showFavsOnly, filterStatus, filterBrand, filterStars, filterPriceMax, categories])
 
   const sorted = useMemo(() => {
-    if (!sortBy) return filtered
+    if (sorts.length === 0) return filtered
     return [...filtered].sort((a, b) => {
-      let valA: string | number, valB: string | number
-
-      switch (sortBy) {
-        case 'name':       valA = a.name.toLowerCase();                    valB = b.name.toLowerCase();                    break
-        case 'brand':      valA = a.brand.toLowerCase();                   valB = b.brand.toLowerCase();                   break
-        case 'category':   valA = a.category?.name.toLowerCase() ?? '';    valB = b.category?.name.toLowerCase() ?? '';    break
-        case 'price':      valA = a.price ?? Infinity;                     valB = b.price ?? Infinity;                     break
-        case 'rating':     valA = a.rating ?? 0;                           valB = b.rating ?? 0;                           break
-        case 'created_at': valA = a.created_at;                            valB = b.created_at;                            break
+      for (const { key, dir } of sorts) {
+        const valA = getSortValue(a, key)
+        const valB = getSortValue(b, key)
+        if (valA < valB) return dir === 'asc' ? -1 : 1
+        if (valA > valB) return dir === 'asc' ? 1 : -1
       }
-
-      if (valA < valB) return sortDir === 'asc' ? -1 : 1
-      if (valA > valB) return sortDir === 'asc' ? 1 : -1
       return 0
     })
-  }, [filtered, sortBy, sortDir])
+  }, [filtered, sorts])
 
   function clearFilters() {
     setFilterBrand('')
     setFilterStars(null)
     setFilterPriceMax('')
     setFilterStatus('active')
+  }
+
+  function handleEdit(product: Product) {
+    setSelectedProduct(null)
+    setEditProduct(product)
   }
 
   return (
@@ -129,7 +144,7 @@ export default function Gallery({ products, categories }: Props) {
           </p>
         </div>
 
-        {/* Barre de recherche + bouton filtres */}
+        {/* Barre de recherche + filtres + favoris */}
         <div className="flex gap-3 mb-5 max-w-2xl mx-auto items-center">
           <input
             type="text"
@@ -154,7 +169,6 @@ export default function Gallery({ products, categories }: Props) {
               </span>
             )}
           </button>
-
           <button
             onClick={() => setShowFavsOnly(v => !v)}
             className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-3 rounded-full border text-sm font-medium transition-all ${
@@ -293,11 +307,15 @@ export default function Gallery({ products, categories }: Props) {
           </div>
         )}
 
-        {/* Barre de tri */}
+        {/* Barre de tri multi-critères */}
         <div className="flex items-center gap-2 flex-wrap mb-6">
           <span className="text-xs text-mauve uppercase tracking-widest font-medium flex-shrink-0">Trier :</span>
           {SORT_OPTIONS.map(({ key, label }) => {
-            const active = sortBy === key
+            const idx = sorts.findIndex(s => s.key === key)
+            const active = idx !== -1
+            const dir = active ? sorts[idx].dir : null
+            const priority = idx + 1
+
             return (
               <button
                 key={key}
@@ -308,22 +326,36 @@ export default function Gallery({ products, categories }: Props) {
                     : 'bg-white text-mauve border-border hover:border-rose hover:text-rose-deep'
                 }`}
               >
+                {active && sorts.length > 1 && (
+                  <span className="w-4 h-4 rounded-full bg-white/25 text-[10px] flex items-center justify-center font-bold">
+                    {priority}
+                  </span>
+                )}
                 {label}
                 {active
-                  ? sortDir === 'asc'
+                  ? dir === 'asc'
                     ? <ChevronUp className="w-3 h-3" />
                     : <ChevronDown className="w-3 h-3" />
                   : <ChevronsUpDown className="w-3 h-3 opacity-40" />
                 }
+                {active && (
+                  <span
+                    role="button"
+                    onClick={e => { e.stopPropagation(); removeSort(key) }}
+                    className="ml-0.5 hover:opacity-70"
+                  >
+                    <X className="w-2.5 h-2.5" />
+                  </span>
+                )}
               </button>
             )
           })}
-          {sortBy && (
+          {sorts.length > 0 && (
             <button
-              onClick={() => { setSortBy(null); setSortDir('asc') }}
+              onClick={() => setSorts([])}
               className="flex items-center gap-1 text-xs text-mauve hover:text-rose-deep transition-colors"
             >
-              <X className="w-3 h-3" /> Effacer
+              <X className="w-3 h-3" /> Tout effacer
             </button>
           )}
         </div>
@@ -347,7 +379,20 @@ export default function Gallery({ products, categories }: Props) {
         )}
       </div>
 
-      <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+      <ProductModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        isAdmin={isAdmin}
+        onEdit={handleEdit}
+      />
+
+      {editProduct && (
+        <ProductForm
+          categories={categories}
+          product={editProduct}
+          onClose={() => setEditProduct(null)}
+        />
+      )}
     </>
   )
 }

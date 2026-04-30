@@ -7,7 +7,8 @@ export const revalidate = 60
 export default async function HomePage() {
   const supabase = await createClient()
 
-  const [{ data: categories }, { data: products }] = await Promise.all([
+  const [{ data: { user } }, { data: categories }, { data: products }] = await Promise.all([
+    supabase.auth.getUser(),
     supabase.from('categories').select('*').order('name'),
     supabase
       .from('products')
@@ -21,6 +22,7 @@ export default async function HomePage() {
       <Gallery
         products={products ?? []}
         categories={categories ?? []}
+        isAdmin={!!user}
       />
     </div>
   )
