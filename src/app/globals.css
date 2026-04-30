@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: var(--font-playfair);
+  --font-body: var(--font-dm-sans);
+
+  --color-cream: #FDF5F0;
+  --color-blush: #F8D7DA;
+  --color-rose: #E8A4B8;
+  --color-rose-dark: #C4758A;
+  --color-rose-deep: #8B3A52;
+  --color-plum: #4A2535;
+  --color-gold: #C4A35A;
+  --color-mauve: #B07085;
+  --color-petal: #FBEEF2;
+  --color-border: #F0D5DC;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-plum);
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display, 'Playfair Display', serif);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-blush);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-rose-dark);
+  border-radius: 3px;
+}
+
+.masonry {
+  columns: 2;
+  column-gap: 1rem;
+}
+@media (min-width: 640px) {
+  .masonry { columns: 2; column-gap: 1.25rem; }
+}
+@media (min-width: 768px) {
+  .masonry { columns: 3; column-gap: 1.25rem; }
+}
+@media (min-width: 1280px) {
+  .masonry { columns: 4; column-gap: 1.5rem; }
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+}
+@media (min-width: 768px) {
+  .masonry-item { margin-bottom: 1.25rem; }
+}
+@media (min-width: 1280px) {
+  .masonry-item { margin-bottom: 1.5rem; }
+}
