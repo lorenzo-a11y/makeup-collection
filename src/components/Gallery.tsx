@@ -193,7 +193,7 @@ export default function Gallery({ products, categories }: Props) {
         </div>
 
         {/* Sous-catégories */}
-        {subCategories.length > 0 && (
+        {activeMain !== null && subCategories.length > 0 && (
           <div className="mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
             <div className="flex gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center scrollbar-hide">
               {subCategories.map(cat => (
