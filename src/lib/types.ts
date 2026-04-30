@@ -23,6 +23,7 @@ export type Product = {
   image_url: string | null
   price: number | null
   rating: number | null
+  is_favorite: boolean
   created_at: string
   category?: Category
   shades?: Shade[]

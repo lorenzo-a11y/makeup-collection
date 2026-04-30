@@ -1,7 +1,8 @@
 'use client'
 
-import Image from 'next/image'
-import { Star } from 'lucide-react'
+import { useState } from 'react'
+import { Star, Heart } from 'lucide-react'
+import { toggleFavorite } from '@/app/actions'
 import type { Product } from '@/lib/types'
 
 interface Props {
@@ -10,28 +11,45 @@ interface Props {
 }
 
 export default function ProductCard({ product, onClick }: Props) {
+  const [isFav, setIsFav] = useState(product.is_favorite ?? false)
+
+  async function handleToggleFav(e: React.MouseEvent) {
+    e.stopPropagation()
+    setIsFav(v => !v)
+    await toggleFavorite(product.id, !isFav)
+  }
+
   return (
-    <div
-      onClick={onClick}
-      className="masonry-item cursor-pointer group"
-    >
+    <div onClick={onClick} className="masonry-item cursor-pointer group">
       <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 border border-border">
-        {product.image_url ? (
-          <div className="relative overflow-hidden">
-            <img
-              src={product.image_url}
-              alt={product.name}
-              className="w-full object-cover group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
+        <div className="relative">
+          {product.image_url ? (
+            <div className="overflow-hidden">
+              <img
+                src={product.image_url}
+                alt={product.name}
+                className="w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+            </div>
+          ) : (
+            <div className="w-full h-40 bg-petal flex items-center justify-center">
+              <span className="text-4xl">{product.category?.icon ?? '💄'}</span>
+            </div>
+          )}
+
+          {/* Bouton cœur */}
+          <button
+            onClick={handleToggleFav}
+            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform"
+          >
+            <Heart
+              className="w-4 h-4 transition-colors"
+              fill={isFav ? '#E8A4B8' : 'none'}
+              stroke={isFav ? '#E8A4B8' : '#B07085'}
             />
-          </div>
-        ) : (
-          <div className="w-full h-40 bg-petal flex items-center justify-center">
-            <span className="text-4xl">
-              {product.category?.icon ?? '💄'}
-            </span>
-          </div>
-        )}
+          </button>
+        </div>
 
         <div className="p-4">
           <p className="text-xs uppercase tracking-widest text-mauve font-medium mb-1">

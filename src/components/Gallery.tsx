@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { SlidersHorizontal, X, Star } from 'lucide-react'
+import { SlidersHorizontal, X, Star, Heart } from 'lucide-react'
 import type { Category, Product } from '@/lib/types'
 import ProductCard from './ProductCard'
 import ProductModal from './ProductModal'
@@ -17,6 +17,7 @@ export default function Gallery({ products, categories }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [search, setSearch] = useState('')
   const [showFilters, setShowFilters] = useState(false)
+  const [showFavsOnly, setShowFavsOnly] = useState(false)
   const [filterBrand, setFilterBrand] = useState('')
   const [filterStars, setFilterStars] = useState<number | null>(null)
   const [filterPriceMax, setFilterPriceMax] = useState('')
@@ -55,12 +56,13 @@ export default function Gallery({ products, categories }: Props) {
         p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)
       )
     }
+    if (showFavsOnly) list = list.filter(p => p.is_favorite)
     if (filterBrand) list = list.filter(p => p.brand === filterBrand)
     if (filterStars) list = list.filter(p => p.rating !== null && p.rating >= filterStars)
     if (filterPriceMax) list = list.filter(p => p.price !== null && p.price <= parseFloat(filterPriceMax))
 
     return list
-  }, [products, activeMain, activeSub, search, filterBrand, filterStars, filterPriceMax, categories])
+  }, [products, activeMain, activeSub, search, showFavsOnly, filterBrand, filterStars, filterPriceMax, categories])
 
   function clearFilters() {
     setFilterBrand('')
@@ -81,7 +83,7 @@ export default function Gallery({ products, categories }: Props) {
         </div>
 
         {/* Barre de recherche + bouton filtres */}
-        <div className="flex gap-3 mb-5 max-w-2xl mx-auto">
+        <div className="flex gap-3 mb-5 max-w-2xl mx-auto items-center">
           <input
             type="text"
             placeholder="Rechercher un produit ou une marque..."
@@ -98,12 +100,25 @@ export default function Gallery({ products, categories }: Props) {
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
-            <span className="hidden sm:inline">Filtres</span>
+          <span className="hidden sm:inline">Filtres</span>
             {activeFiltersCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-gold text-white text-xs rounded-full flex items-center justify-center font-bold">
                 {activeFiltersCount}
               </span>
             )}
+          </button>
+
+          {/* Bouton Mes favoris */}
+          <button
+            onClick={() => setShowFavsOnly(v => !v)}
+            className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-3 rounded-full border text-sm font-medium transition-all ${
+              showFavsOnly
+                ? 'bg-rose text-white border-rose'
+                : 'bg-white text-mauve border-border hover:border-rose hover:text-rose-deep'
+            }`}
+          >
+            <Heart className="w-4 h-4" fill={showFavsOnly ? 'white' : 'none'} />
+            <span className="hidden sm:inline">Favoris</span>
           </button>
         </div>
 

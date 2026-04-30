@@ -116,6 +116,12 @@ export async function deleteProduct(id: string) {
   return { success: true }
 }
 
+export async function toggleFavorite(id: string, value: boolean) {
+  const supabase = await createClient()
+  await supabase.from('products').update({ is_favorite: value }).eq('id', id)
+  revalidatePath('/')
+}
+
 export async function uploadImage(formData: FormData) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
