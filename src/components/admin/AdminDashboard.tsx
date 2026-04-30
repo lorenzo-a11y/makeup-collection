@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Plus, Pencil, Trash2, LogOut, Star } from 'lucide-react'
+import { Plus, Pencil, Trash2, LogOut, Star, Eye } from 'lucide-react'
+import Link from 'next/link'
 import { logout, deleteProduct } from '@/app/actions'
 import ProductForm from './ProductForm'
 import type { Category, Product } from '@/lib/types'
@@ -34,11 +35,16 @@ export default function AdminDashboard({ products, categories }: Props) {
   return (
     <div className="min-h-screen bg-cream">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="font-display italic text-3xl text-rose-deep">
-            Admin
-          </h1>
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
+          <h1 className="font-display italic text-3xl text-rose-deep">Admin</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link
+              href="/"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm text-mauve rounded-full hover:bg-petal transition-colors border border-border"
+            >
+              <Eye className="w-4 h-4" />
+              Voir le site
+            </Link>
             <button
               onClick={() => { setEditProduct(null); setShowForm(true) }}
               className="flex items-center gap-2 px-4 py-2 bg-rose-deep text-white rounded-full text-sm font-medium hover:bg-plum transition-colors shadow-sm"
@@ -67,16 +73,9 @@ export default function AdminDashboard({ products, categories }: Props) {
             </div>
           ) : (
             products.map(product => (
-              <div
-                key={product.id}
-                className="bg-white rounded-2xl border border-border p-4 flex items-center gap-4"
-              >
+              <div key={product.id} className="bg-white rounded-2xl border border-border p-4 flex items-center gap-4">
                 {product.image_url ? (
-                  <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className="w-14 h-14 rounded-xl object-cover flex-shrink-0"
-                  />
+                  <img src={product.image_url} alt={product.name} className="w-14 h-14 rounded-xl object-cover flex-shrink-0" />
                 ) : (
                   <div className="w-14 h-14 rounded-xl bg-petal flex items-center justify-center flex-shrink-0 text-2xl">
                     {product.category?.icon ?? '💄'}
@@ -86,7 +85,7 @@ export default function AdminDashboard({ products, categories }: Props) {
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-mauve uppercase tracking-widest">{product.brand}</p>
                   <p className="font-display text-base text-plum truncate">{product.name}</p>
-                  <div className="flex items-center gap-2 mt-0.5">
+                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                     {product.category && (
                       <span className="text-xs bg-petal text-rose-dark px-2 py-0.5 rounded-full">
                         {product.category.name}

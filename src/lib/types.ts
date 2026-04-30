@@ -4,6 +4,7 @@ export type Category = {
   slug: string
   icon: string | null
   has_shades: boolean
+  parent_id: string | null
 }
 
 export type Shade = {

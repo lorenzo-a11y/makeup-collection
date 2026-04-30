@@ -70,3 +70,11 @@ h1, h2, h3, h4 {
 @media (min-width: 1280px) {
   .masonry-item { margin-bottom: 1.5rem; }
 }
+
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useMemo } from 'react'
 import { Plus, X, Upload } from 'lucide-react'
 import { createProduct, updateProduct, uploadImage } from '@/app/actions'
 import type { Category, Product, Shade } from '@/lib/types'
@@ -26,7 +26,12 @@ export default function ProductForm({ categories, product, onClose }: Props) {
   )
   const [categoryId, setCategoryId] = useState(product?.category_id ?? '')
 
+  const mainCategories = useMemo(() => categories.filter(c => !c.parent_id), [categories])
   const selectedCategory = categories.find(c => c.id === categoryId)
+
+  function getSubCategories(parentId: string) {
+    return categories.filter(c => c.parent_id === parentId)
+  }
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -43,11 +48,9 @@ export default function ProductForm({ categories, product, onClose }: Props) {
   function addShade() {
     setShades(prev => [...prev, { name: '', hex_color: '#E8A4B8' }])
   }
-
   function removeShade(i: number) {
     setShades(prev => prev.filter((_, idx) => idx !== i))
   }
-
   function updateShade(i: number, field: keyof ShadeInput, value: string) {
     setShades(prev => prev.map((s, idx) => idx === i ? { ...s, [field]: value } : s))
   }
@@ -70,13 +73,13 @@ export default function ProductForm({ categories, product, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-plum/40 backdrop-blur-sm" />
       <div
-        className="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+        className="relative bg-white w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl shadow-2xl max-h-[95vh] sm:max-h-[90vh] flex flex-col"
         onClick={e => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white rounded-t-3xl px-6 pt-6 pb-4 border-b border-border flex items-center justify-between z-10">
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border flex-shrink-0">
           <h2 className="font-display text-lg text-plum">
             {product ? 'Modifier le produit' : 'Nouveau produit'}
           </h2>
@@ -85,7 +88,7 @@ export default function ProductForm({ categories, product, onClose }: Props) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto flex-1">
           {error && (
             <p className="text-sm text-red-500 bg-red-50 px-4 py-2 rounded-xl">{error}</p>
           )}
@@ -121,11 +124,25 @@ export default function ProductForm({ categories, product, onClose }: Props) {
                 className="w-full px-4 py-2.5 rounded-xl border border-border text-sm text-plum focus:outline-none focus:border-rose focus:ring-2 focus:ring-rose/20 bg-white"
               >
                 <option value="">Choisir...</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.icon} {cat.name}
-                  </option>
-                ))}
+                {mainCategories.map(main => {
+                  const subs = getSubCategories(main.id)
+                  if (subs.length === 0) {
+                    return (
+                      <option key={main.id} value={main.id}>
+                        {main.icon} {main.name}
+                      </option>
+                    )
+                  }
+                  return (
+                    <optgroup key={main.id} label={`${main.icon} ${main.name}`}>
+                      {subs.map(sub => (
+                        <option key={sub.id} value={sub.id}>
+                          {sub.icon} {sub.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )
+                })}
               </select>
             </div>
           </div>
@@ -173,7 +190,7 @@ export default function ProductForm({ categories, product, onClose }: Props) {
             <label className="block text-xs font-medium text-mauve uppercase tracking-widest mb-1.5">Photo</label>
             <div className="space-y-2">
               {imageUrl && (
-                <img src={imageUrl} alt="preview" className="w-full h-32 object-cover rounded-xl" />
+                <img src={imageUrl} alt="preview" className="w-full h-40 object-contain rounded-xl bg-petal" />
               )}
               <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-border hover:border-rose cursor-pointer transition-colors text-sm text-mauve hover:text-rose-deep">
                 <Upload className="w-4 h-4" />
@@ -187,11 +204,7 @@ export default function ProductForm({ categories, product, onClose }: Props) {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="text-xs font-medium text-mauve uppercase tracking-widest">Teintes</label>
-                <button
-                  type="button"
-                  onClick={addShade}
-                  className="flex items-center gap-1 text-xs text-rose-deep hover:text-plum transition-colors"
-                >
+                <button type="button" onClick={addShade} className="flex items-center gap-1 text-xs text-rose-deep hover:text-plum transition-colors">
                   <Plus className="w-3.5 h-3.5" /> Ajouter
                 </button>
               </div>
