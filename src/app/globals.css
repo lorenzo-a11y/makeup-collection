@@ -46,30 +46,37 @@ h1, h2, h3, h4 {
   border-radius: 3px;
 }
 
-/* Grid uniforme — même taille sur toutes les cartes, tous écrans */
+/* Grid uniforme — 2 colonnes mobile, 3 tablette, 4 PC */
 .masonry {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  align-items: stretch;
+}
+
+@media (min-width: 640px) {
+  .masonry { gap: 1.25rem; }
 }
 
 @media (min-width: 768px) {
-  .masonry {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
-  }
+  .masonry { grid-template-columns: repeat(3, 1fr); }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1024px) {
   .masonry {
     grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
   }
 }
 
+/*
+  masonry-item est un conteneur flex colonne.
+  Cela permet à la carte enfant (flex-1) de s'étirer
+  jusqu'à la hauteur de la ligne du grid — compatible Safari.
+*/
 .masonry-item {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .scrollbar-hide {

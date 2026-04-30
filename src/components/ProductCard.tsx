@@ -21,25 +21,32 @@ export default function ProductCard({ product, onClick }: Props) {
 
   return (
     <div onClick={onClick} className="masonry-item cursor-pointer">
-      {/* Pas de overflow-hidden + transform sur le même élément — bug Safari macOS */}
-      <div className={`h-full flex flex-col bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 border ${product.is_empty ? 'border-border opacity-60' : 'border-border'}`}>
+      <div className={`flex-1 flex flex-col bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 border ${product.is_empty ? 'border-border opacity-60' : 'border-border'}`}>
 
-        {/* Zone image : overflow-hidden isolé ici, sans transform */}
-        <div className="relative overflow-hidden rounded-t-3xl flex-shrink-0">
-          {product.image_url ? (
-            <div className="aspect-square bg-petal">
+        {/*
+          Zone image.
+          - overflow-hidden + border-radius ne clippe pas sur Safari sans couche GPU.
+          - translateZ(0) force une couche GPU dédiée → Safari clippe correctement.
+          - padding-top 100% = ratio carré compatible tous navigateurs (pas d'aspect-ratio).
+        */}
+        <div
+          className="relative flex-shrink-0 overflow-hidden rounded-t-3xl"
+          style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}
+        >
+          <div className="relative w-full bg-petal" style={{ paddingTop: '100%' }}>
+            {product.image_url ? (
               <img
                 src={product.image_url}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
               />
-            </div>
-          ) : (
-            <div className="aspect-square bg-petal flex items-center justify-center">
-              <span className="text-4xl">{product.category?.icon ?? '💄'}</span>
-            </div>
-          )}
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-4xl">{product.category?.icon ?? '💄'}</span>
+              </div>
+            )}
+          </div>
 
           {product.is_empty && (
             <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-mauve text-xs font-medium px-2.5 py-1 rounded-full shadow-sm">
@@ -59,7 +66,7 @@ export default function ProductCard({ product, onClick }: Props) {
           </button>
         </div>
 
-        {/* Zone texte : flex-1 pour remplir la hauteur de la grille */}
+        {/* Zone texte — flex-1 pour aligner les cartes à la même hauteur */}
         <div className="p-4 flex-1 flex flex-col">
           <p className="text-xs uppercase tracking-widest text-mauve font-medium mb-1">{product.brand}</p>
           <h3 className="font-display text-base text-plum leading-snug mb-2">{product.name}</h3>
@@ -87,7 +94,7 @@ export default function ProductCard({ product, onClick }: Props) {
           )}
 
           {product.rating && (
-            <div className="flex gap-0.5 mt-auto">
+            <div className="flex gap-0.5 mt-auto pt-2">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
@@ -99,6 +106,7 @@ export default function ProductCard({ product, onClick }: Props) {
             </div>
           )}
         </div>
+
       </div>
     </div>
   )
