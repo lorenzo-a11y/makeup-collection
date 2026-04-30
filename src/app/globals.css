@@ -46,36 +46,30 @@ h1, h2, h3, h4 {
   border-radius: 3px;
 }
 
-/* Mobile : grid 2 colonnes fixe, toujours */
+/* Grid uniforme — même taille sur toutes les cartes, tous écrans */
 .masonry {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+  align-items: stretch;
 }
 
-/* Tablette et + : retour en columns CSS pour l'effet masonry */
 @media (min-width: 768px) {
   .masonry {
-    display: block;
-    columns: 3;
-    column-gap: 1.25rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
   }
 }
+
 @media (min-width: 1280px) {
   .masonry {
-    columns: 4;
-    column-gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
   }
 }
 
 .masonry-item {
-  break-inside: avoid;
-}
-@media (min-width: 768px) {
-  .masonry-item { margin-bottom: 1.25rem; }
-}
-@media (min-width: 1280px) {
-  .masonry-item { margin-bottom: 1.5rem; }
+  min-width: 0;
 }
 
 .scrollbar-hide {

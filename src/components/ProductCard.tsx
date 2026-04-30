@@ -20,32 +20,33 @@ export default function ProductCard({ product, onClick }: Props) {
   }
 
   return (
-    <div onClick={onClick} className="masonry-item cursor-pointer group">
-      <div className={`bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 border ${product.is_empty ? 'border-border opacity-60' : 'border-border'}`}>
-        <div className="relative">
+    <div onClick={onClick} className="masonry-item cursor-pointer">
+      {/* Pas de overflow-hidden + transform sur le même élément — bug Safari macOS */}
+      <div className={`h-full flex flex-col bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 border ${product.is_empty ? 'border-border opacity-60' : 'border-border'}`}>
+
+        {/* Zone image : overflow-hidden isolé ici, sans transform */}
+        <div className="relative overflow-hidden rounded-t-3xl flex-shrink-0">
           {product.image_url ? (
-            <div className="overflow-hidden [will-change:transform]">
+            <div className="aspect-square bg-petal">
               <img
                 src={product.image_url}
                 alt={product.name}
-                className="w-full object-cover group-hover:scale-105 transition-transform duration-500 [backface-visibility:hidden]"
+                className="w-full h-full object-cover"
                 loading="lazy"
               />
             </div>
           ) : (
-            <div className="w-full h-40 bg-petal flex items-center justify-center">
+            <div className="aspect-square bg-petal flex items-center justify-center">
               <span className="text-4xl">{product.category?.icon ?? '💄'}</span>
             </div>
           )}
 
-          {/* Badge épuisé */}
           {product.is_empty && (
             <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-mauve text-xs font-medium px-2.5 py-1 rounded-full shadow-sm">
               Épuisé
             </div>
           )}
 
-          {/* Bouton cœur */}
           <button
             onClick={handleToggleFav}
             className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform"
@@ -58,12 +59,13 @@ export default function ProductCard({ product, onClick }: Props) {
           </button>
         </div>
 
-        <div className="p-4">
+        {/* Zone texte : flex-1 pour remplir la hauteur de la grille */}
+        <div className="p-4 flex-1 flex flex-col">
           <p className="text-xs uppercase tracking-widest text-mauve font-medium mb-1">{product.brand}</p>
           <h3 className="font-display text-base text-plum leading-snug mb-2">{product.name}</h3>
 
           {product.category && (
-            <span className="inline-block text-xs bg-petal text-rose-dark px-2.5 py-0.5 rounded-full mb-3">
+            <span className="inline-block text-xs bg-petal text-rose-dark px-2.5 py-0.5 rounded-full mb-3 self-start">
               {product.category.icon} {product.category.name}
             </span>
           )}
@@ -85,7 +87,7 @@ export default function ProductCard({ product, onClick }: Props) {
           )}
 
           {product.rating && (
-            <div className="flex gap-0.5">
+            <div className="flex gap-0.5 mt-auto">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
