@@ -24,7 +24,18 @@ export type Product = {
   price: number | null
   rating: number | null
   is_favorite: boolean
+  is_empty: boolean
   created_at: string
   category?: Category
   shades?: Shade[]
+}
+
+export type Collection = {
+  id: string
+  name: string
+  description: string | null
+  cover_image_url: string | null
+  created_at: string
+  products?: Product[]
+  product_count?: number
 }

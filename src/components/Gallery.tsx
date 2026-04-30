@@ -18,6 +18,7 @@ export default function Gallery({ products, categories }: Props) {
   const [search, setSearch] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [showFavsOnly, setShowFavsOnly] = useState(false)
+  const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'empty'>('active')
   const [filterBrand, setFilterBrand] = useState('')
   const [filterStars, setFilterStars] = useState<number | null>(null)
   const [filterPriceMax, setFilterPriceMax] = useState('')
@@ -56,13 +57,15 @@ export default function Gallery({ products, categories }: Props) {
         p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)
       )
     }
+    if (filterStatus === 'active') list = list.filter(p => !p.is_empty)
+    else if (filterStatus === 'empty') list = list.filter(p => p.is_empty)
     if (showFavsOnly) list = list.filter(p => p.is_favorite)
     if (filterBrand) list = list.filter(p => p.brand === filterBrand)
     if (filterStars) list = list.filter(p => p.rating !== null && p.rating >= filterStars)
     if (filterPriceMax) list = list.filter(p => p.price !== null && p.price <= parseFloat(filterPriceMax))
 
     return list
-  }, [products, activeMain, activeSub, search, showFavsOnly, filterBrand, filterStars, filterPriceMax, categories])
+  }, [products, activeMain, activeSub, search, showFavsOnly, filterStatus, filterBrand, filterStars, filterPriceMax, categories])
 
   function clearFilters() {
     setFilterBrand('')
@@ -120,6 +123,23 @@ export default function Gallery({ products, categories }: Props) {
             <Heart className="w-4 h-4" fill={showFavsOnly ? 'white' : 'none'} />
             <span className="hidden sm:inline">Favoris</span>
           </button>
+        </div>
+
+        {/* Filtre statut épuisé */}
+        <div className="flex gap-2 justify-center mb-5">
+          {(['active', 'all', 'empty'] as const).map(s => (
+            <button
+              key={s}
+              onClick={() => setFilterStatus(s)}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                filterStatus === s
+                  ? 'bg-rose-deep text-white border-rose-deep'
+                  : 'bg-white text-mauve border-border hover:border-rose hover:text-rose-deep'
+              }`}
+            >
+              {s === 'active' ? 'Actifs' : s === 'empty' ? 'Épuisés' : 'Tous'}
+            </button>
+          ))}
         </div>
 
         {/* Panneau filtres avancés */}

@@ -21,7 +21,7 @@ export default function ProductCard({ product, onClick }: Props) {
 
   return (
     <div onClick={onClick} className="masonry-item cursor-pointer group">
-      <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 border border-border">
+      <div className={`bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 border ${product.is_empty ? 'border-border opacity-60' : 'border-border'}`}>
         <div className="relative">
           {product.image_url ? (
             <div className="overflow-hidden">
@@ -35,6 +35,13 @@ export default function ProductCard({ product, onClick }: Props) {
           ) : (
             <div className="w-full h-40 bg-petal flex items-center justify-center">
               <span className="text-4xl">{product.category?.icon ?? '💄'}</span>
+            </div>
+          )}
+
+          {/* Badge épuisé */}
+          {product.is_empty && (
+            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-mauve text-xs font-medium px-2.5 py-1 rounded-full shadow-sm">
+              Épuisé
             </div>
           )}
 
@@ -52,12 +59,8 @@ export default function ProductCard({ product, onClick }: Props) {
         </div>
 
         <div className="p-4">
-          <p className="text-xs uppercase tracking-widest text-mauve font-medium mb-1">
-            {product.brand}
-          </p>
-          <h3 className="font-display text-base text-plum leading-snug mb-2">
-            {product.name}
-          </h3>
+          <p className="text-xs uppercase tracking-widest text-mauve font-medium mb-1">{product.brand}</p>
+          <h3 className="font-display text-base text-plum leading-snug mb-2">{product.name}</h3>
 
           {product.category && (
             <span className="inline-block text-xs bg-petal text-rose-dark px-2.5 py-0.5 rounded-full mb-3">
@@ -76,9 +79,7 @@ export default function ProductCard({ product, onClick }: Props) {
                 />
               ))}
               {product.shades.length > 6 && (
-                <span className="text-xs text-mauve self-center">
-                  +{product.shades.length - 6}
-                </span>
+                <span className="text-xs text-mauve self-center">+{product.shades.length - 6}</span>
               )}
             </div>
           )}

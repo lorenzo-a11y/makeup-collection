@@ -33,7 +33,6 @@ export async function createProduct(formData: FormData) {
 
   const shadesJson = formData.get('shades') as string
   const shades: Pick<Shade, 'name' | 'hex_color'>[] = shadesJson ? JSON.parse(shadesJson) : []
-
   const priceRaw = formData.get('price') as string
   const ratingRaw = formData.get('rating') as string
 
@@ -71,7 +70,6 @@ export async function updateProduct(id: string, formData: FormData) {
 
   const shadesJson = formData.get('shades') as string
   const shades: Pick<Shade, 'name' | 'hex_color'>[] = shadesJson ? JSON.parse(shadesJson) : []
-
   const priceRaw = formData.get('price') as string
   const ratingRaw = formData.get('rating') as string
 
@@ -99,6 +97,7 @@ export async function updateProduct(id: string, formData: FormData) {
 
   revalidatePath('/')
   revalidatePath('/admin')
+  revalidatePath('/collections')
   return { success: true }
 }
 
@@ -113,6 +112,7 @@ export async function deleteProduct(id: string) {
 
   revalidatePath('/')
   revalidatePath('/admin')
+  revalidatePath('/collections')
   return { success: true }
 }
 
@@ -120,6 +120,16 @@ export async function toggleFavorite(id: string, value: boolean) {
   const supabase = await createClient()
   await supabase.from('products').update({ is_favorite: value }).eq('id', id)
   revalidatePath('/')
+}
+
+export async function toggleEmpty(id: string, value: boolean) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non autorisé' }
+  await supabase.from('products').update({ is_empty: value }).eq('id', id)
+  revalidatePath('/')
+  revalidatePath('/admin')
+  return { success: true }
 }
 
 export async function uploadImage(formData: FormData) {
@@ -139,4 +149,78 @@ export async function uploadImage(formData: FormData) {
 
   const { data } = supabase.storage.from('product-images').getPublicUrl(filename)
   return { url: data.publicUrl }
+}
+
+// ─── Collections ──────────────────────────────────────────────
+
+export async function createCollection(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non autorisé' }
+
+  const { data, error } = await supabase
+    .from('collections')
+    .insert({
+      name: formData.get('name') as string,
+      description: (formData.get('description') as string) || null,
+      cover_image_url: (formData.get('cover_image_url') as string) || null,
+    })
+    .select()
+    .single()
+
+  if (error) return { error: error.message }
+
+  const productIds: string[] = JSON.parse((formData.get('product_ids') as string) || '[]')
+  if (productIds.length > 0) {
+    await supabase.from('collection_products').insert(
+      productIds.map(pid => ({ collection_id: data.id, product_id: pid }))
+    )
+  }
+
+  revalidatePath('/collections')
+  revalidatePath('/admin')
+  return { success: true }
+}
+
+export async function updateCollection(id: string, formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non autorisé' }
+
+  const { error } = await supabase
+    .from('collections')
+    .update({
+      name: formData.get('name') as string,
+      description: (formData.get('description') as string) || null,
+      cover_image_url: (formData.get('cover_image_url') as string) || null,
+    })
+    .eq('id', id)
+
+  if (error) return { error: error.message }
+
+  const productIds: string[] = JSON.parse((formData.get('product_ids') as string) || '[]')
+  await supabase.from('collection_products').delete().eq('collection_id', id)
+  if (productIds.length > 0) {
+    await supabase.from('collection_products').insert(
+      productIds.map(pid => ({ collection_id: id, product_id: pid }))
+    )
+  }
+
+  revalidatePath('/collections')
+  revalidatePath(`/collections/${id}`)
+  revalidatePath('/admin')
+  return { success: true }
+}
+
+export async function deleteCollection(id: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non autorisé' }
+
+  const { error } = await supabase.from('collections').delete().eq('id', id)
+  if (error) return { error: error.message }
+
+  revalidatePath('/collections')
+  revalidatePath('/admin')
+  return { success: true }
 }
