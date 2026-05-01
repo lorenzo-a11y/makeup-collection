@@ -25,7 +25,10 @@ export default function RoueClient({ products, categories }: Props) {
   const [filterBrand, setFilterBrand] = useState('')
   const [filterStars, setFilterStars] = useState<number | null>(null)
 
-  const brands = useMemo(() => Array.from(new Set(products.map(p => p.brand))).sort(), [products])
+  const brands = useMemo(() => {
+    const base = filterCat ? products.filter(p => p.category_id === filterCat) : products
+    return Array.from(new Set(base.map(p => p.brand))).sort()
+  }, [products, filterCat])
 
   const pool = useMemo(() => {
     let list = products
@@ -73,7 +76,7 @@ export default function RoueClient({ products, categories }: Props) {
           <div className="grid grid-cols-2 gap-3">
             <select
               value={filterCat}
-              onChange={e => setFilterCat(e.target.value)}
+              onChange={e => { setFilterCat(e.target.value); setFilterBrand('') }}
               className="px-3 py-2 rounded-xl border border-border text-sm text-plum focus:outline-none focus:border-rose bg-white"
             >
               <option value="">Toutes catégories</option>
