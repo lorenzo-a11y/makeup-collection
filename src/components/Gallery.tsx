@@ -402,6 +402,7 @@ export default function Gallery({ products, categories, isAdmin }: Props) {
       {editProduct && (
         <ProductForm
           categories={categories}
+          brands={Array.from(new Set(products.map(p => p.brand))).sort()}
           product={editProduct}
           onClose={() => setEditProduct(null)}
         />
