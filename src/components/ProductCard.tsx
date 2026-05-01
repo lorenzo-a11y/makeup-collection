@@ -8,9 +8,10 @@ import type { Product } from '@/lib/types'
 interface Props {
   product: Product
   onClick: () => void
+  isAdmin?: boolean
 }
 
-export default function ProductCard({ product, onClick }: Props) {
+export default function ProductCard({ product, onClick, isAdmin }: Props) {
   const [isFav, setIsFav] = useState(product.is_favorite ?? false)
 
   async function handleToggleFav(e: React.MouseEvent) {
@@ -51,16 +52,24 @@ export default function ProductCard({ product, onClick }: Props) {
             </div>
           )}
 
-          <button
-            onClick={handleToggleFav}
-            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform"
-          >
-            <Heart
-              className="w-4 h-4 transition-colors"
-              fill={isFav ? '#E8A4B8' : 'none'}
-              stroke={isFav ? '#E8A4B8' : '#B07085'}
-            />
-          </button>
+          {isAdmin ? (
+            /* Admin : bouton cliquable */
+            <button
+              onClick={handleToggleFav}
+              className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform"
+            >
+              <Heart
+                className="w-4 h-4 transition-colors"
+                fill={isFav ? '#E8A4B8' : 'none'}
+                stroke={isFav ? '#E8A4B8' : '#B07085'}
+              />
+            </button>
+          ) : isFav ? (
+            /* Visiteur : cœur affiché en lecture seule si favori */
+            <div className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm">
+              <Heart className="w-4 h-4" fill="#E8A4B8" stroke="#E8A4B8" />
+            </div>
+          ) : null}
         </div>
 
         <div className="p-4 flex-1 flex flex-col">

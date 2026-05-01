@@ -385,6 +385,7 @@ export default function Gallery({ products, categories, isAdmin }: Props) {
                 key={product.id}
                 product={product}
                 onClick={() => setSelectedProduct(product)}
+                isAdmin={isAdmin}
               />
             ))}
           </div>
