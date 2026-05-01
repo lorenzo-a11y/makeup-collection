@@ -16,6 +16,48 @@
   --color-border: #F0D5DC;
 }
 
+/* ── Thème Lavande ── */
+[data-theme="lavande"] {
+  --color-cream:     #F5F0FD;
+  --color-petal:     #EDE8FB;
+  --color-blush:     #DAD5F5;
+  --color-rose:      #A898D8;
+  --color-rose-dark: #7B6AB5;
+  --color-rose-deep: #4A3A8B;
+  --color-plum:      #2A1F4A;
+  --color-mauve:     #806FA8;
+  --color-border:    #D5CEF0;
+  --color-gold:      #C4A35A;
+}
+
+/* ── Thème Nude ── */
+[data-theme="nude"] {
+  --color-cream:     #FAF5EF;
+  --color-petal:     #F5EDE0;
+  --color-blush:     #EDD8C0;
+  --color-rose:      #C8A882;
+  --color-rose-dark: #A07850;
+  --color-rose-deep: #6B4A28;
+  --color-plum:      #3A2815;
+  --color-mauve:     #A08060;
+  --color-border:    #E5D0B8;
+  --color-gold:      #C4A35A;
+}
+
+/* ── Thème Bordeaux ── */
+[data-theme="bordeaux"] {
+  --color-cream:     #FDF0F0;
+  --color-petal:     #F8E5E5;
+  --color-blush:     #F0CECE;
+  --color-rose:      #C49090;
+  --color-rose-dark: #A05858;
+  --color-rose-deep: #6B1E1E;
+  --color-plum:      #3A1010;
+  --color-mauve:     #A06868;
+  --color-border:    #E8C5C5;
+  --color-gold:      #C4A35A;
+}
+
 * {
   box-sizing: border-box;
 }
