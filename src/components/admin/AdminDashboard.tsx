@@ -181,6 +181,7 @@ export default function AdminDashboard({ products, categories, collections }: Pr
       {showProductForm && (
         <ProductForm
           categories={categories}
+          brands={Array.from(new Set(products.map(p => p.brand))).sort()}
           product={editProduct ?? undefined}
           onClose={() => { setShowProductForm(false); setEditProduct(null) }}
         />

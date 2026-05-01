@@ -14,11 +14,12 @@ interface ShadeInput {
 
 interface Props {
   categories: Category[]
+  brands: string[]
   product?: Product
   onClose: () => void
 }
 
-export default function ProductForm({ categories, product, onClose }: Props) {
+export default function ProductForm({ categories, brands, product, onClose }: Props) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState('')
   const [imageUrl, setImageUrl] = useState(product?.image_url ?? '')
@@ -162,10 +163,14 @@ export default function ProductForm({ categories, product, onClose }: Props) {
                   name="brand"
                   value={brand}
                   onChange={e => setBrand(e.target.value)}
+                  list="brands-list"
                   required
                   className="w-full px-4 py-2.5 rounded-xl border border-border text-sm text-plum focus:outline-none focus:border-rose focus:ring-2 focus:ring-rose/20"
                   placeholder="Charlotte Tilbury..."
                 />
+                <datalist id="brands-list">
+                  {brands.map(b => <option key={b} value={b} />)}
+                </datalist>
               </div>
               <div>
                 <label className="block text-xs font-medium text-mauve uppercase tracking-widest mb-1.5">Catégorie *</label>
