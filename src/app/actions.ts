@@ -122,6 +122,20 @@ export async function toggleFavorite(id: string, value: boolean) {
   revalidatePath('/')
 }
 
+export async function toggleVoyage(id: string, value: boolean) {
+  const supabase = await createClient()
+  await supabase.from('products').update({ in_voyage: value }).eq('id', id)
+  revalidatePath('/')
+  revalidatePath('/voyage')
+}
+
+export async function clearVoyage() {
+  const supabase = await createClient()
+  await supabase.from('products').update({ in_voyage: false }).eq('in_voyage', true)
+  revalidatePath('/')
+  revalidatePath('/voyage')
+}
+
 export async function toggleEmpty(id: string, value: boolean) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

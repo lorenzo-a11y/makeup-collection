@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Star, Heart } from 'lucide-react'
-import { toggleFavorite } from '@/app/actions'
+import { Star, Heart, Luggage } from 'lucide-react'
+import { toggleFavorite, toggleVoyage } from '@/app/actions'
 import type { Product } from '@/lib/types'
 
 interface Props {
@@ -13,11 +13,18 @@ interface Props {
 
 export default function ProductCard({ product, onClick, isAdmin }: Props) {
   const [isFav, setIsFav] = useState(product.is_favorite ?? false)
+  const [inVoyage, setInVoyage] = useState(product.in_voyage ?? false)
 
   async function handleToggleFav(e: React.MouseEvent) {
     e.stopPropagation()
     setIsFav(v => !v)
     await toggleFavorite(product.id, !isFav)
+  }
+
+  async function handleToggleVoyage(e: React.MouseEvent) {
+    e.stopPropagation()
+    setInVoyage(v => !v)
+    await toggleVoyage(product.id, !inVoyage)
   }
 
   return (
@@ -52,8 +59,21 @@ export default function ProductCard({ product, onClick, isAdmin }: Props) {
             </div>
           )}
 
+          {/* Bouton valise — toujours visible */}
+          <button
+            onClick={handleToggleVoyage}
+            className="absolute top-3 left-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform"
+            title={inVoyage ? 'Retirer de la valise' : 'Ajouter à la valise'}
+          >
+            <Luggage
+              className="w-4 h-4 transition-colors"
+              fill={inVoyage ? '#B07085' : 'none'}
+              stroke={inVoyage ? '#B07085' : '#D1B5BC'}
+            />
+          </button>
+
           {isAdmin ? (
-            /* Admin : bouton cliquable */
+            /* Admin : bouton cœur cliquable */
             <button
               onClick={handleToggleFav}
               className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform"

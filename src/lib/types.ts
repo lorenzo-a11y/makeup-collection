@@ -25,6 +25,7 @@ export type Product = {
   rating: number | null
   is_favorite: boolean
   is_empty: boolean
+  in_voyage: boolean
   created_at: string
   category?: Category
   shades?: Shade[]

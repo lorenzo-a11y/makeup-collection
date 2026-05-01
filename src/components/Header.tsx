@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Sparkles, BarChart2, Layers, Shuffle, Palette } from 'lucide-react'
+import { Sparkles, BarChart2, Layers, Shuffle, Palette, Luggage } from 'lucide-react'
 import ShareButton from './ShareButton'
 
 export default function Header() {
@@ -39,6 +39,14 @@ export default function Header() {
           >
             <Palette className="w-4 h-4" />
             <span className="hidden sm:inline text-xs">Palette</span>
+          </Link>
+          <Link
+            href="/voyage"
+            className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal"
+            title="Ma Valise"
+          >
+            <Luggage className="w-4 h-4" />
+            <span className="hidden sm:inline text-xs">Valise</span>
           </Link>
           <Link
             href="/stats"
