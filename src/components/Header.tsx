@@ -7,59 +7,46 @@ import ShareButton from './ShareButton'
 export default function Header() {
   return (
     <header className="sticky top-0 z-40 bg-cream/90 backdrop-blur-sm border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-rose-dark" />
-          <span className="font-display italic text-base sm:text-xl text-rose-deep tracking-wide">
+          <span className="font-display italic text-lg sm:text-xl text-rose-deep tracking-wide">
             Ma Collection Beauté
           </span>
         </Link>
-        <div className="flex items-center gap-1">
+
+        {/* Desktop : nav complète */}
+        <div className="hidden sm:flex items-center gap-1">
           <ShareButton />
-          <Link
-            href="/collections"
-            className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal"
-            title="Mes Looks"
-          >
+          <Link href="/collections" className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal">
             <Layers className="w-4 h-4" />
-            <span className="hidden sm:inline text-xs">Looks</span>
+            <span className="text-xs">Looks</span>
           </Link>
-          <Link
-            href="/roue"
-            className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal"
-            title="Roue Beauté"
-          >
+          <Link href="/roue" className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal">
             <Shuffle className="w-4 h-4" />
-            <span className="hidden sm:inline text-xs">Roue</span>
+            <span className="text-xs">Roue</span>
           </Link>
-          <Link
-            href="/palette"
-            className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal"
-            title="Palette de couleurs"
-          >
+          <Link href="/palette" className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal">
             <Palette className="w-4 h-4" />
-            <span className="hidden sm:inline text-xs">Palette</span>
+            <span className="text-xs">Palette</span>
           </Link>
-          <Link
-            href="/voyage"
-            className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal"
-            title="Ma Valise"
-          >
+          <Link href="/voyage" className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal">
             <Luggage className="w-4 h-4" />
-            <span className="hidden sm:inline text-xs">Valise</span>
+            <span className="text-xs">Valise</span>
           </Link>
-          <Link
-            href="/stats"
-            className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal"
-            title="Statistiques"
-          >
+          <Link href="/stats" className="flex items-center gap-1.5 text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal">
             <BarChart2 className="w-4 h-4" />
-            <span className="hidden sm:inline text-xs">Stats</span>
+            <span className="text-xs">Stats</span>
           </Link>
-          <Link
-            href="/admin"
-            className="text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal"
-          >
+          <Link href="/admin" className="text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal">
+            Cristina
+          </Link>
+        </div>
+
+        {/* Mobile : share + admin uniquement (le reste est dans la nav du bas) */}
+        <div className="flex sm:hidden items-center gap-1">
+          <ShareButton />
+          <Link href="/admin" className="text-sm text-mauve hover:text-rose-deep transition-colors px-3 py-1.5 rounded-full hover:bg-petal">
             Cristina
           </Link>
         </div>

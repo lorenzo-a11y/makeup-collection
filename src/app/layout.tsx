@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, DM_Sans } from 'next/font/google'
+import BottomNav from '@/components/BottomNav'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -21,7 +22,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={`${playfair.variable} ${dmSans.variable}`}>
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen pb-16 sm:pb-0">
+        {children}
+        <BottomNav />
+      </body>
     </html>
   )
 }
