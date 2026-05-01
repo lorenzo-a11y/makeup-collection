@@ -10,7 +10,7 @@ interface Props {
   onClose: () => void
 }
 
-const AUTOPLAY_DURATION = 4000
+const AUTOPLAY_DURATION = 3000
 const MAX_DOTS = 9
 
 export default function PresentationMode({ products, startIndex = 0, onClose }: Props) {
