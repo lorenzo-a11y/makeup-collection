@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useMemo, lazy, Suspense } from 'react'
+import { useState, useTransition, useMemo, useRef, lazy, Suspense } from 'react'
 import { Plus, X, Upload, ScanBarcode, Loader2 } from 'lucide-react'
 import { createProduct, updateProduct, uploadImage } from '@/app/actions'
 import type { Category, Product, Shade } from '@/lib/types'
@@ -32,6 +32,13 @@ export default function ProductForm({ categories, brands, product, onClose }: Pr
   const [categoryId, setCategoryId] = useState(product?.category_id ?? '')
   const [productName, setProductName] = useState(product?.name ?? '')
   const [brand, setBrand] = useState(product?.brand ?? '')
+  const [brandOpen, setBrandOpen] = useState(false)
+  const brandRef = useRef<HTMLDivElement>(null)
+
+  const filteredBrands = useMemo(
+    () => brands.filter(b => b.toLowerCase().includes(brand.toLowerCase()) && b !== brand),
+    [brands, brand]
+  )
 
   const mainCategories = useMemo(() => categories.filter(c => !c.parent_id), [categories])
   const selectedCategory = categories.find(c => c.id === categoryId)
@@ -157,20 +164,32 @@ export default function ProductForm({ categories, brands, product, onClose }: Pr
                   placeholder="Nom du produit"
                 />
               </div>
-              <div>
+              <div className="relative" ref={brandRef}>
                 <label className="block text-xs font-medium text-mauve uppercase tracking-widest mb-1.5">Marque *</label>
                 <input
                   name="brand"
                   value={brand}
-                  onChange={e => setBrand(e.target.value)}
-                  list="brands-list"
+                  onChange={e => { setBrand(e.target.value); setBrandOpen(true) }}
+                  onFocus={() => setBrandOpen(true)}
+                  onBlur={() => setTimeout(() => setBrandOpen(false), 150)}
                   required
                   className="w-full px-4 py-2.5 rounded-xl border border-border text-sm text-plum focus:outline-none focus:border-rose focus:ring-2 focus:ring-rose/20"
                   placeholder="Charlotte Tilbury..."
+                  autoComplete="off"
                 />
-                <datalist id="brands-list">
-                  {brands.map(b => <option key={b} value={b} />)}
-                </datalist>
+                {brandOpen && filteredBrands.length > 0 && (
+                  <ul className="absolute z-50 w-full mt-1 bg-white border border-border rounded-xl shadow-lg overflow-hidden max-h-48 overflow-y-auto">
+                    {filteredBrands.map(b => (
+                      <li
+                        key={b}
+                        onMouseDown={() => { setBrand(b); setBrandOpen(false) }}
+                        className="px-4 py-2.5 text-sm text-plum hover:bg-petal cursor-pointer transition-colors"
+                      >
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
               <div>
                 <label className="block text-xs font-medium text-mauve uppercase tracking-widest mb-1.5">Catégorie *</label>
