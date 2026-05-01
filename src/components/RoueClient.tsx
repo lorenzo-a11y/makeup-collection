@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Heart, Star, Sparkles } from 'lucide-react'
 import type { Category, Product } from '@/lib/types'
@@ -21,24 +21,20 @@ export default function RoueClient({ products, categories }: Props) {
 
   // Filtres
   const [favOnly, setFavOnly] = useState(false)
-  const [filterMain, setFilterMain] = useState('')
+  const [filterCat, setFilterCat] = useState('')
   const [filterBrand, setFilterBrand] = useState('')
   const [filterStars, setFilterStars] = useState<number | null>(null)
 
-  const mainCategories = useMemo(() => categories.filter(c => !c.parent_id), [categories])
   const brands = useMemo(() => Array.from(new Set(products.map(p => p.brand))).sort(), [products])
 
   const pool = useMemo(() => {
     let list = products
     if (favOnly) list = list.filter(p => p.is_favorite)
-    if (filterMain) {
-      const subIds = categories.filter(c => c.parent_id === filterMain).map(c => c.id)
-      list = list.filter(p => p.category_id === filterMain || subIds.includes(p.category_id))
-    }
+    if (filterCat) list = list.filter(p => p.category_id === filterCat)
     if (filterBrand) list = list.filter(p => p.brand === filterBrand)
     if (filterStars) list = list.filter(p => p.rating !== null && p.rating >= filterStars)
     return list
-  }, [products, categories, favOnly, filterMain, filterBrand, filterStars])
+  }, [products, favOnly, filterCat, filterBrand, filterStars])
 
   function spin() {
     if (spinning || pool.length === 0) return
@@ -76,12 +72,12 @@ export default function RoueClient({ products, categories }: Props) {
           <p className="text-xs font-medium text-mauve uppercase tracking-widest">Filtrer les produits</p>
           <div className="grid grid-cols-2 gap-3">
             <select
-              value={filterMain}
-              onChange={e => setFilterMain(e.target.value)}
+              value={filterCat}
+              onChange={e => setFilterCat(e.target.value)}
               className="px-3 py-2 rounded-xl border border-border text-sm text-plum focus:outline-none focus:border-rose bg-white"
             >
               <option value="">Toutes catégories</option>
-              {mainCategories.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
+              {categories.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
             </select>
             <select
               value={filterBrand}
