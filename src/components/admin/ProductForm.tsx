@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition, useMemo, useRef, lazy, Suspense } from 'react'
-import { Plus, X, Upload, ScanBarcode, Loader2 } from 'lucide-react'
+import { Plus, X, Upload, ScanBarcode, Loader2, ChevronUp, ChevronDown } from 'lucide-react'
 import { createProduct, updateProduct, uploadImage } from '@/app/actions'
 import type { Category, Product, Shade } from '@/lib/types'
 
@@ -34,6 +34,11 @@ export default function ProductForm({ categories, brands, product, onClose }: Pr
   const [brand, setBrand] = useState(product?.brand ?? '')
   const [brandOpen, setBrandOpen] = useState(false)
   const brandRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLFormElement>(null)
+
+  function scroll(dir: 'up' | 'down') {
+    scrollRef.current?.scrollBy({ top: dir === 'down' ? 120 : -120, behavior: 'smooth' })
+  }
 
   const filteredBrands = useMemo(
     () => brands.filter(b => b.toLowerCase().includes(brand.toLowerCase()) && b !== brand),
@@ -133,7 +138,27 @@ export default function ProductForm({ categories, brands, product, onClose }: Pr
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto flex-1">
+          {/* Boutons scroll mobile — cachés sur desktop */}
+          <div className="sm:hidden absolute right-3 bottom-24 z-10 flex flex-col gap-1.5">
+            <button
+              type="button"
+              onClick={() => scroll('up')}
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-white/90 shadow-md border border-border text-mauve active:scale-95 transition-transform"
+              aria-label="Remonter"
+            >
+              <ChevronUp className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scroll('down')}
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-white/90 shadow-md border border-border text-mauve active:scale-95 transition-transform"
+              aria-label="Descendre"
+            >
+              <ChevronDown className="w-4 h-4" />
+            </button>
+          </div>
+
+          <form ref={scrollRef} onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto flex-1 pb-20 sm:pb-6">
             {error && (
               <p className="text-sm text-red-500 bg-red-50 px-4 py-2 rounded-xl">{error}</p>
             )}
