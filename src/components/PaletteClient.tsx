@@ -45,21 +45,28 @@ function ShadeCircle({ shade, productName, productBrand }: {
 
   return (
     <div
-      className="relative flex-shrink-0"
+      className="relative flex-shrink-0 flex flex-col items-center gap-1.5 w-12 sm:w-16"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div
-        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-4 border-white shadow-md hover:scale-110 transition-transform duration-200 cursor-default"
-        style={{ backgroundColor: color }}
-      />
+      {/* Tooltip desktop uniquement (hover) */}
       {hovered && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-plum text-white text-xs rounded-2xl px-3 py-2 whitespace-nowrap z-20 shadow-lg pointer-events-none">
+        <div className="hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-plum text-white text-xs rounded-2xl px-3 py-2 whitespace-nowrap z-20 shadow-lg pointer-events-none">
           <p className="font-medium">{shade.name}</p>
           <p className="text-white/60">{productBrand} · {productName}</p>
           <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-plum" />
         </div>
       )}
+
+      <div
+        className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border-[3px] border-white shadow-md hover:scale-110 transition-transform duration-200 cursor-default"
+        style={{ backgroundColor: color }}
+      />
+
+      {/* Nom visible directement sur mobile, et sur desktop aussi */}
+      <span className="text-[10px] sm:text-xs text-mauve text-center leading-tight line-clamp-2 w-full">
+        {shade.name}
+      </span>
     </div>
   )
 }
@@ -86,7 +93,7 @@ export default function PaletteClient({ products }: Props) {
   return (
     <div>
       {/* Toggle vue */}
-      <div className="flex gap-2 mb-8">
+      <div className="flex gap-2 mb-6">
         <button
           onClick={() => setView('rainbow')}
           className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
@@ -110,9 +117,8 @@ export default function PaletteClient({ products }: Props) {
       </div>
 
       {view === 'rainbow' ? (
-        /* Vue arc-en-ciel : toutes les teintes triées par teinte */
-        <div className="bg-white rounded-3xl border border-border p-6 sm:p-8">
-          <div className="flex flex-wrap gap-3">
+        <div className="bg-white rounded-3xl border border-border p-4 sm:p-8">
+          <div className="flex flex-wrap gap-3 sm:gap-4">
             {sortedByHue.map((shade, i) => (
               <ShadeCircle
                 key={`${shade.id}-${i}`}
@@ -124,23 +130,23 @@ export default function PaletteClient({ products }: Props) {
           </div>
         </div>
       ) : (
-        /* Vue par produit */
-        <div className="space-y-6">
+        <div className="space-y-4">
           {products.map(product => (
-            <div key={product.id} className="bg-white rounded-3xl border border-border p-6">
+            <div key={product.id} className="bg-white rounded-3xl border border-border p-4 sm:p-6">
+              {/* En-tête produit */}
               <div className="flex items-center gap-3 mb-4">
                 {product.image_url && (
                   <img
                     src={product.image_url}
                     alt={product.name}
-                    className="w-10 h-10 rounded-xl object-cover bg-petal flex-shrink-0"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover bg-petal flex-shrink-0"
                   />
                 )}
-                <div>
-                  <p className="text-xs text-mauve uppercase tracking-widest font-medium">{product.brand}</p>
-                  <p className="font-display text-base text-plum">{product.name}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] sm:text-xs text-mauve uppercase tracking-widest font-medium truncate">{product.brand}</p>
+                  <p className="font-display text-sm sm:text-base text-plum truncate">{product.name}</p>
                 </div>
-                <span className="ml-auto text-xs text-mauve">{product.shades.length} teinte{product.shades.length > 1 ? 's' : ''}</span>
+                <span className="text-xs text-mauve flex-shrink-0">{product.shades.length} teinte{product.shades.length > 1 ? 's' : ''}</span>
               </div>
               <div className="flex flex-wrap gap-3">
                 {product.shades.map(shade => (
