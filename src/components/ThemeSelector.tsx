@@ -1,12 +1,16 @@
 'use client'
 
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { Palette } from 'lucide-react'
 import { useTheme, THEMES } from './ThemeProvider'
 
 export default function ThemeSelector() {
   const { theme, setTheme } = useTheme()
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+
+  if (pathname === '/admin') return null
 
   return (
     <div className="fixed bottom-20 right-4 sm:bottom-6 z-50">
