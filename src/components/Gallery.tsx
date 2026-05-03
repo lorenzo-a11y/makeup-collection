@@ -411,6 +411,7 @@ export default function Gallery({ products, categories, isAdmin }: Props) {
         </div>
 
         {/* Grille */}
+        <div className="mt-12 sm:mt-0" />
         {sorted.length === 0 ? (
           <div className="text-center py-24">
             <span className="text-5xl block mb-4">✨</span>
