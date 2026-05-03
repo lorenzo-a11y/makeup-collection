@@ -40,8 +40,9 @@ export default function WorldMap({
 }: Props) {
   const locked = filterContinent === 'Tous'
 
-  const geos = (geographies: ReturnType<typeof Array>[]) =>
-    geographies.map((geo: { rsmKey: string; id: string | number }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const geos = (geographies: any[]) =>
+    geographies.map((geo) => {
       const id = String(geo.id).padStart(3, '0')
       const info = GEO_COUNTRIES[id] ?? GEO_COUNTRIES[String(geo.id)]
       const alpha2 = info?.alpha2 ?? null
