@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Shuffle, MonitorPlay, Palette } from 'lucide-react'
+import { Shuffle, MonitorPlay, Palette, Layers } from 'lucide-react'
 import PresentationMode from '@/components/PresentationMode'
 import { useTheme, THEMES } from '@/components/ThemeProvider'
 import type { Product } from '@/lib/types'
@@ -65,6 +65,19 @@ export default function OutilsClient({ products }: Props) {
               <p className="text-xs text-mauve mt-0.5">{products.length} produits</p>
             </div>
           </button>
+
+          <Link
+            href="/collections"
+            className="bg-white rounded-3xl border border-border p-6 flex flex-col items-center gap-3 hover:shadow-md hover:border-rose transition-all group"
+          >
+            <div className="w-14 h-14 rounded-2xl bg-petal flex items-center justify-center group-hover:bg-rose/20 transition-colors">
+              <Layers className="w-7 h-7 text-rose-deep" />
+            </div>
+            <div className="text-center">
+              <p className="font-display text-base text-plum">Looks</p>
+              <p className="text-xs text-mauve mt-0.5">Mes collections</p>
+            </div>
+          </Link>
 
           <button
             onClick={() => productsWithShades.length > 0 && setPaletteOpen(v => !v)}

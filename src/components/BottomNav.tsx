@@ -2,14 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Luggage, Layers, BarChart2, Wand2 } from 'lucide-react'
+import { Home, Luggage, BarChart2, Wand2 } from 'lucide-react'
 
 const ITEMS = [
-  { href: '/',            icon: Home,     label: 'Accueil' },
-  { href: '/collections', icon: Layers,   label: 'Looks'   },
-  { href: '/voyage',      icon: Luggage,  label: 'Valise'  },
-  { href: '/outils',      icon: Wand2,    label: 'Outils'  },
-  { href: '/stats',       icon: BarChart2, label: 'Stats'  },
+  { href: '/',        icon: Home,      label: 'Accueil' },
+  { href: '/voyage',  icon: Luggage,   label: 'Valise'  },
+  { href: '/outils',  icon: Wand2,     label: 'Outils'  },
+  { href: '/stats',   icon: BarChart2, label: 'Stats'   },
 ]
 
 export default function BottomNav() {
