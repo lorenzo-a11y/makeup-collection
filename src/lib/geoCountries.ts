@@ -1,4 +1,4 @@
-export type Continent = 'Europe' | 'Amériques' | 'Asie' | 'Océanie' | 'Afrique'
+export type Continent = 'Europe' | 'Amérique du Nord' | 'Amérique du Sud' | 'Asie' | 'Océanie' | 'Afrique'
 
 export interface CountryInfo {
   alpha2: string
@@ -50,25 +50,27 @@ export const GEO_COUNTRIES: Record<string, CountryInfo> = {
   '804': { alpha2: 'UA', name: 'Ukraine',            continent: 'Europe',    flag: '🇺🇦' },
   '826': { alpha2: 'GB', name: 'Royaume-Uni',        continent: 'Europe',    flag: '🇬🇧' },
 
-  // Amériques
-  '032': { alpha2: 'AR', name: 'Argentine',          continent: 'Amériques', flag: '🇦🇷' },
-  '068': { alpha2: 'BO', name: 'Bolivie',            continent: 'Amériques', flag: '🇧🇴' },
-  '076': { alpha2: 'BR', name: 'Brésil',             continent: 'Amériques', flag: '🇧🇷' },
-  '124': { alpha2: 'CA', name: 'Canada',             continent: 'Amériques', flag: '🇨🇦' },
-  '152': { alpha2: 'CL', name: 'Chili',              continent: 'Amériques', flag: '🇨🇱' },
-  '170': { alpha2: 'CO', name: 'Colombie',           continent: 'Amériques', flag: '🇨🇴' },
-  '188': { alpha2: 'CR', name: 'Costa Rica',         continent: 'Amériques', flag: '🇨🇷' },
-  '192': { alpha2: 'CU', name: 'Cuba',               continent: 'Amériques', flag: '🇨🇺' },
-  '218': { alpha2: 'EC', name: 'Équateur',           continent: 'Amériques', flag: '🇪🇨' },
-  '320': { alpha2: 'GT', name: 'Guatemala',          continent: 'Amériques', flag: '🇬🇹' },
-  '388': { alpha2: 'JM', name: 'Jamaïque',           continent: 'Amériques', flag: '🇯🇲' },
-  '484': { alpha2: 'MX', name: 'Mexique',            continent: 'Amériques', flag: '🇲🇽' },
-  '591': { alpha2: 'PA', name: 'Panama',             continent: 'Amériques', flag: '🇵🇦' },
-  '600': { alpha2: 'PY', name: 'Paraguay',           continent: 'Amériques', flag: '🇵🇾' },
-  '604': { alpha2: 'PE', name: 'Pérou',              continent: 'Amériques', flag: '🇵🇪' },
-  '840': { alpha2: 'US', name: 'États-Unis',         continent: 'Amériques', flag: '🇺🇸' },
-  '858': { alpha2: 'UY', name: 'Uruguay',            continent: 'Amériques', flag: '🇺🇾' },
-  '862': { alpha2: 'VE', name: 'Venezuela',          continent: 'Amériques', flag: '🇻🇪' },
+  // Amérique du Nord
+  '124': { alpha2: 'CA', name: 'Canada',             continent: 'Amérique du Nord', flag: '🇨🇦' },
+  '188': { alpha2: 'CR', name: 'Costa Rica',         continent: 'Amérique du Nord', flag: '🇨🇷' },
+  '192': { alpha2: 'CU', name: 'Cuba',               continent: 'Amérique du Nord', flag: '🇨🇺' },
+  '320': { alpha2: 'GT', name: 'Guatemala',          continent: 'Amérique du Nord', flag: '🇬🇹' },
+  '388': { alpha2: 'JM', name: 'Jamaïque',           continent: 'Amérique du Nord', flag: '🇯🇲' },
+  '484': { alpha2: 'MX', name: 'Mexique',            continent: 'Amérique du Nord', flag: '🇲🇽' },
+  '591': { alpha2: 'PA', name: 'Panama',             continent: 'Amérique du Nord', flag: '🇵🇦' },
+  '840': { alpha2: 'US', name: 'États-Unis',         continent: 'Amérique du Nord', flag: '🇺🇸' },
+
+  // Amérique du Sud
+  '032': { alpha2: 'AR', name: 'Argentine',          continent: 'Amérique du Sud', flag: '🇦🇷' },
+  '068': { alpha2: 'BO', name: 'Bolivie',            continent: 'Amérique du Sud', flag: '🇧🇴' },
+  '076': { alpha2: 'BR', name: 'Brésil',             continent: 'Amérique du Sud', flag: '🇧🇷' },
+  '152': { alpha2: 'CL', name: 'Chili',              continent: 'Amérique du Sud', flag: '🇨🇱' },
+  '170': { alpha2: 'CO', name: 'Colombie',           continent: 'Amérique du Sud', flag: '🇨🇴' },
+  '218': { alpha2: 'EC', name: 'Équateur',           continent: 'Amérique du Sud', flag: '🇪🇨' },
+  '600': { alpha2: 'PY', name: 'Paraguay',           continent: 'Amérique du Sud', flag: '🇵🇾' },
+  '604': { alpha2: 'PE', name: 'Pérou',              continent: 'Amérique du Sud', flag: '🇵🇪' },
+  '858': { alpha2: 'UY', name: 'Uruguay',            continent: 'Amérique du Sud', flag: '🇺🇾' },
+  '862': { alpha2: 'VE', name: 'Venezuela',          continent: 'Amérique du Sud', flag: '🇻🇪' },
 
   // Asie
   '050': { alpha2: 'BD', name: 'Bangladesh',         continent: 'Asie',      flag: '🇧🇩' },
@@ -145,4 +147,4 @@ export const GEO_COUNTRIES: Record<string, CountryInfo> = {
   '598': { alpha2: 'PG', name: 'Papouasie',          continent: 'Océanie',   flag: '🇵🇬' },
 }
 
-export const CONTINENTS: Continent[] = ['Europe', 'Amériques', 'Asie', 'Océanie', 'Afrique']
+export const CONTINENTS: Continent[] = ['Europe', 'Amérique du Nord', 'Amérique du Sud', 'Asie', 'Océanie', 'Afrique']

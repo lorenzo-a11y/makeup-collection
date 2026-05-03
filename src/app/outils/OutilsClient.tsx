@@ -81,16 +81,15 @@ export default function OutilsClient({ products }: Props) {
 
           <Link
             href="/marques"
-            className="col-span-2 bg-white rounded-3xl border border-border p-6 flex items-center gap-4 hover:shadow-md hover:border-rose transition-all group"
+            className="bg-white rounded-3xl border border-border p-6 flex flex-col items-center gap-3 hover:shadow-md hover:border-rose transition-all group"
           >
-            <div className="w-14 h-14 rounded-2xl bg-petal flex items-center justify-center group-hover:bg-rose/20 transition-colors flex-shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-petal flex items-center justify-center group-hover:bg-rose/20 transition-colors">
               <Globe className="w-7 h-7 text-rose-deep" />
             </div>
-            <div className="text-left">
-              <p className="font-display text-base text-plum">Carte des Marques</p>
-              <p className="text-xs text-mauve mt-0.5">Origines dans le monde</p>
+            <div className="text-center">
+              <p className="font-display text-base text-plum">Carte</p>
+              <p className="text-xs text-mauve mt-0.5">des Marques</p>
             </div>
-            <span className="ml-auto text-mauve text-lg">›</span>
           </Link>
 
           <button

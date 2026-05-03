@@ -26,57 +26,75 @@ interface Props {
   selectedAlpha2: string | null
   filterContinent: Continent | 'Tous'
   onSelect: (alpha2: string, name: string) => void
+  mapZoom?: number
+  mapCenter?: [number, number]
 }
 
-export default function WorldMap({ countriesWithBrands, selectedAlpha2, filterContinent, onSelect }: Props) {
+export default function WorldMap({
+  countriesWithBrands,
+  selectedAlpha2,
+  filterContinent,
+  onSelect,
+  mapZoom = 1,
+  mapCenter = [0, 15],
+}: Props) {
+  const locked = filterContinent === 'Tous'
+
+  const geos = (geographies: ReturnType<typeof Array>[]) =>
+    geographies.map((geo: { rsmKey: string; id: string | number }) => {
+      const id = String(geo.id).padStart(3, '0')
+      const info = GEO_COUNTRIES[id] ?? GEO_COUNTRIES[String(geo.id)]
+      const alpha2 = info?.alpha2 ?? null
+      const count = alpha2 ? (countriesWithBrands[alpha2] ?? 0) : 0
+      const isSelected = alpha2 !== null && alpha2 === selectedAlpha2
+      const isDimmed = filterContinent !== 'Tous' && info?.continent !== filterContinent
+
+      return (
+        <Geography
+          key={geo.rsmKey}
+          geography={geo}
+          onClick={() => {
+            if (alpha2 && count > 0) onSelect(alpha2, info?.name ?? alpha2)
+          }}
+          style={{
+            default: {
+              fill: countryColor(count, isSelected, isDimmed),
+              stroke: '#FFFFFF',
+              strokeWidth: 0.5,
+              outline: 'none',
+            },
+            hover: {
+              fill: hoverColor(count, isDimmed),
+              stroke: '#FFFFFF',
+              strokeWidth: 0.5,
+              outline: 'none',
+              cursor: count > 0 ? 'pointer' : 'default',
+            },
+            pressed: {
+              fill: '#8B3A52',
+              outline: 'none',
+            },
+          }}
+        />
+      )
+    })
+
   return (
     <ComposableMap
       projectionConfig={{ scale: 145, center: [0, 15] }}
       style={{ width: '100%', height: '100%' }}
     >
-      <ZoomableGroup zoom={1} maxZoom={8} minZoom={0.8}>
+      {locked ? (
         <Geographies geography={GEO_URL}>
-          {({ geographies }) =>
-            geographies.map((geo) => {
-              const id = String(geo.id).padStart(3, '0')
-              const info = GEO_COUNTRIES[id] ?? GEO_COUNTRIES[String(geo.id)]
-              const alpha2 = info?.alpha2 ?? null
-              const count = alpha2 ? (countriesWithBrands[alpha2] ?? 0) : 0
-              const isSelected = alpha2 !== null && alpha2 === selectedAlpha2
-              const isDimmed = filterContinent !== 'Tous' && info?.continent !== filterContinent
-
-              return (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  onClick={() => {
-                    if (alpha2 && count > 0) onSelect(alpha2, info?.name ?? alpha2)
-                  }}
-                  style={{
-                    default: {
-                      fill: countryColor(count, isSelected, isDimmed),
-                      stroke: '#FFFFFF',
-                      strokeWidth: 0.5,
-                      outline: 'none',
-                    },
-                    hover: {
-                      fill: hoverColor(count, isDimmed),
-                      stroke: '#FFFFFF',
-                      strokeWidth: 0.5,
-                      outline: 'none',
-                      cursor: count > 0 ? 'pointer' : 'default',
-                    },
-                    pressed: {
-                      fill: '#8B3A52',
-                      outline: 'none',
-                    },
-                  }}
-                />
-              )
-            })
-          }
+          {({ geographies }) => geos(geographies)}
         </Geographies>
-      </ZoomableGroup>
+      ) : (
+        <ZoomableGroup zoom={mapZoom} center={mapCenter} maxZoom={8} minZoom={0.8}>
+          <Geographies geography={GEO_URL}>
+            {({ geographies }) => geos(geographies)}
+          </Geographies>
+        </ZoomableGroup>
+      )}
     </ComposableMap>
   )
 }

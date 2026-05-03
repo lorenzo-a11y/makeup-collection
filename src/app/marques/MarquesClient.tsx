@@ -21,6 +21,15 @@ const ALPHA2_LOOKUP = Object.fromEntries(
   Object.values(GEO_COUNTRIES).map(info => [info.alpha2, info])
 )
 
+const CONTINENT_CONFIG: Record<string, { center: [number, number]; zoom: number }> = {
+  'Europe':           { center: [15, 52],   zoom: 4   },
+  'Amérique du Nord': { center: [-100, 45], zoom: 2.8 },
+  'Amérique du Sud':  { center: [-58, -15], zoom: 2.8 },
+  'Asie':             { center: [95, 35],   zoom: 2.2 },
+  'Afrique':          { center: [20, 5],    zoom: 2.4 },
+  'Océanie':          { center: [140, -25], zoom: 3.5 },
+}
+
 interface Props {
   brands: BrandData[]
 }
@@ -112,6 +121,7 @@ export default function MarquesClient({ brands }: Props) {
     if (info) setFilterContinent('Tous')
   }, [brandsByCountry, selectedAlpha2])
 
+  const continentCfg = filterContinent !== 'Tous' ? CONTINENT_CONFIG[filterContinent] : null
   const selectedInfo = selectedAlpha2 ? ALPHA2_LOOKUP[selectedAlpha2] : null
   const selectedBrands = selectedAlpha2 ? (brandsByCountry[selectedAlpha2] ?? []) : []
 
@@ -229,6 +239,8 @@ export default function MarquesClient({ brands }: Props) {
               selectedAlpha2={selectedAlpha2}
               filterContinent={filterContinent}
               onSelect={(alpha2, _name) => handleSelect(alpha2)}
+              mapZoom={continentCfg?.zoom}
+              mapCenter={continentCfg?.center}
             />
           </div>
 
