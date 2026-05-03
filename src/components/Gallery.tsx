@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { SlidersHorizontal, X, Star, Heart, ChevronUp, ChevronDown, ChevronsUpDown, MonitorPlay } from 'lucide-react'
+import Link from 'next/link'
+import { SlidersHorizontal, X, Star, Heart, ChevronUp, ChevronDown, ChevronsUpDown, MonitorPlay, Globe } from 'lucide-react'
 import type { Category, Product } from '@/lib/types'
 import ProductCard from './ProductCard'
 import ProductModal from './ProductModal'
@@ -191,6 +192,13 @@ export default function Gallery({ products, categories, isAdmin }: Props) {
               Présentation
             </button>
           )}
+          <Link
+            href="/marques"
+            className="hidden sm:flex flex-shrink-0 items-center gap-1.5 px-4 py-3 rounded-full border text-sm font-medium transition-all bg-white text-mauve border-border hover:border-rose hover:text-rose-deep"
+          >
+            <Globe className="w-4 h-4" />
+            Carte
+          </Link>
         </div>
 
         {/* Panneau filtres avancés */}

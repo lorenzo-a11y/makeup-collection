@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, DM_Sans } from 'next/font/google'
 import BottomNav from '@/components/BottomNav'
-import DesktopNav from '@/components/DesktopNav'
 import ThemeProvider from '@/components/ThemeProvider'
 import ThemeSelector from '@/components/ThemeSelector'
 import './globals.css'
@@ -40,9 +39,8 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={`${playfair.variable} ${dmSans.variable}`}>
-      <body className="min-h-screen pb-16 sm:pb-0 sm:pt-14">
+      <body className="min-h-screen pb-16 sm:pb-0">
         <ThemeProvider>
-          <DesktopNav />
           {children}
           <BottomNav />
           <ThemeSelector />
