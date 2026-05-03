@@ -49,20 +49,20 @@ export default function VoyageClient({ groups: initialGroups, total, isAdmin }: 
             </h2>
             <div className="space-y-3">
               {group.items.map(product => (
-                <div key={product.id} className="flex items-center gap-3">
+                <div key={product.id} className="flex items-center gap-3 min-w-0">
                   <div
-                    className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
+                    className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
                     onClick={() => setModalProduct(product)}
                   >
                     {product.image_url
                       ? <img src={product.image_url} alt={product.name} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
                       : <div className="w-12 h-12 rounded-xl bg-petal flex items-center justify-center text-xl flex-shrink-0">{product.category?.icon ?? '💄'}</div>
                     }
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-mauve">{product.brand}</p>
+                    <div className="flex-1 min-w-0 overflow-hidden">
+                      <p className="text-xs text-mauve truncate">{product.brand}</p>
                       <p className="text-sm font-medium text-plum truncate">{product.name}</p>
                       {product.category && (
-                        <span className="text-xs bg-petal text-rose-dark px-2 py-0.5 rounded-full">{product.category.icon} {product.category.name}</span>
+                        <span className="inline-block max-w-full text-xs bg-petal text-rose-dark px-2 py-0.5 rounded-full truncate">{product.category.icon} {product.category.name}</span>
                       )}
                     </div>
                   </div>
