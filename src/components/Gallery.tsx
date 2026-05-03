@@ -1,12 +1,11 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { SlidersHorizontal, X, Star, Heart, ChevronUp, ChevronDown, ChevronsUpDown, MonitorPlay } from 'lucide-react'
+import { SlidersHorizontal, X, Star, Heart, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import type { Category, Product } from '@/lib/types'
 import ProductCard from './ProductCard'
 import ProductModal from './ProductModal'
 import ProductForm from './admin/ProductForm'
-import PresentationMode from './PresentationMode'
 
 type SortKey = 'name' | 'price' | 'brand' | 'category' | 'rating' | 'created_at'
 type SortItem = { key: SortKey; dir: 'asc' | 'desc' }
@@ -42,7 +41,6 @@ export default function Gallery({ products, categories, isAdmin }: Props) {
   const [activeSub, setActiveSub] = useState<string | null>(null)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [editProduct, setEditProduct] = useState<Product | null>(null)
-  const [presentationOpen, setPresentationOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [showFavsOnly, setShowFavsOnly] = useState(false)
@@ -182,16 +180,6 @@ export default function Gallery({ products, categories, isAdmin }: Props) {
             <Heart className="w-4 h-4" fill={showFavsOnly ? 'white' : 'none'} />
             <span className="hidden sm:inline">Favoris</span>
           </button>
-          {sorted.length > 0 && (
-            <button
-              onClick={() => setPresentationOpen(true)}
-              className="flex-shrink-0 flex items-center gap-1.5 px-4 py-3 rounded-full border text-sm font-medium transition-all bg-white text-mauve border-border hover:border-rose hover:text-rose-deep"
-              title="Mode présentation"
-            >
-              <MonitorPlay className="w-4 h-4" />
-              <span className="hidden sm:inline">Présentation</span>
-            </button>
-          )}
         </div>
 
         {/* Panneau filtres avancés */}
@@ -405,13 +393,6 @@ export default function Gallery({ products, categories, isAdmin }: Props) {
           brands={Array.from(new Set(products.map(p => p.brand))).sort()}
           product={editProduct}
           onClose={() => setEditProduct(null)}
-        />
-      )}
-
-      {presentationOpen && sorted.length > 0 && (
-        <PresentationMode
-          products={sorted}
-          onClose={() => setPresentationOpen(false)}
         />
       )}
     </>

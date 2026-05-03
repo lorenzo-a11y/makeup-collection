@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Shuffle, MonitorPlay } from 'lucide-react'
+import { Shuffle, MonitorPlay, Palette } from 'lucide-react'
 import PresentationMode from '@/components/PresentationMode'
 import { useTheme, THEMES } from '@/components/ThemeProvider'
 import type { Product } from '@/lib/types'
@@ -13,7 +13,10 @@ interface Props {
 
 export default function OutilsClient({ products }: Props) {
   const [presentationOpen, setPresentationOpen] = useState(false)
+  const [paletteOpen, setPaletteOpen] = useState(false)
   const { theme, setTheme } = useTheme()
+
+  const productsWithShades = products.filter(p => p.shades && p.shades.length > 0)
 
   return (
     <div className="min-h-screen bg-cream pb-24">
@@ -49,7 +52,56 @@ export default function OutilsClient({ products }: Props) {
               <p className="text-xs text-mauve mt-0.5">{products.length} produits</p>
             </div>
           </button>
+
+          <button
+            onClick={() => productsWithShades.length > 0 && setPaletteOpen(v => !v)}
+            disabled={productsWithShades.length === 0}
+            className={`col-span-2 bg-white rounded-3xl border p-6 flex items-center gap-4 hover:shadow-md transition-all group disabled:opacity-40 disabled:cursor-not-allowed ${paletteOpen ? 'border-rose-deep' : 'border-border hover:border-rose'}`}
+          >
+            <div className="w-14 h-14 rounded-2xl bg-petal flex items-center justify-center group-hover:bg-rose/20 transition-colors flex-shrink-0">
+              <Palette className="w-7 h-7 text-rose-deep" />
+            </div>
+            <div className="text-left">
+              <p className="font-display text-base text-plum">Palette de teintes</p>
+              <p className="text-xs text-mauve mt-0.5">
+                {productsWithShades.length} produit{productsWithShades.length > 1 ? 's' : ''} avec teintes
+              </p>
+            </div>
+            <span className="ml-auto text-mauve text-sm">{paletteOpen ? '▲' : '▼'}</span>
+          </button>
         </div>
+
+        {/* Palette de teintes — dépliable */}
+        {paletteOpen && (
+          <div className="bg-white rounded-3xl border border-border p-6 mb-8 space-y-6">
+            {productsWithShades.map(product => (
+              <div key={product.id}>
+                <div className="flex items-center gap-2 mb-3">
+                  {product.image_url && (
+                    <img src={product.image_url} alt={product.name} className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-xs text-mauve uppercase tracking-widest truncate">{product.brand}</p>
+                    <p className="text-sm font-medium text-plum truncate">{product.name}</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {product.shades!.map(shade => (
+                    <div key={shade.id} className="flex flex-col items-center gap-1">
+                      <div
+                        className="w-10 h-10 rounded-full border-4 border-white shadow-md"
+                        style={{ backgroundColor: shade.hex_color ?? '#E8A4B8' }}
+                      />
+                      <span className="text-[10px] text-mauve max-w-[52px] text-center leading-tight">
+                        {shade.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Sélecteur de thème */}
         <div className="bg-white rounded-3xl border border-border p-6">
