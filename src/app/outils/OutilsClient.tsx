@@ -11,6 +11,19 @@ interface Props {
   products: Product[]
 }
 
+function hexToHue(hex: string): number {
+  const r = parseInt(hex.slice(1, 3), 16) / 255
+  const g = parseInt(hex.slice(3, 5), 16) / 255
+  const b = parseInt(hex.slice(5, 7), 16) / 255
+  const max = Math.max(r, g, b), min = Math.min(r, g, b)
+  if (max === min) return 0
+  const d = max - min
+  let h = max === r ? (g - b) / d + (g < b ? 6 : 0)
+         : max === g ? (b - r) / d + 2
+         :             (r - g) / d + 4
+  return h * 60
+}
+
 export default function OutilsClient({ products }: Props) {
   const [presentationOpen, setPresentationOpen] = useState(false)
   const [paletteOpen, setPaletteOpen] = useState(false)
@@ -86,7 +99,7 @@ export default function OutilsClient({ products }: Props) {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  {product.shades!.map(shade => (
+                  {[...product.shades!].sort((a, b) => hexToHue(a.hex_color ?? '#E8A4B8') - hexToHue(b.hex_color ?? '#E8A4B8')).map(shade => (
                     <div key={shade.id} className="flex flex-col items-center gap-1">
                       <div
                         className="w-10 h-10 rounded-full border-4 border-white shadow-md"
