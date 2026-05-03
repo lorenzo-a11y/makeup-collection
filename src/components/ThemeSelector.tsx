@@ -13,7 +13,7 @@ export default function ThemeSelector() {
   if (pathname === '/admin') return null
 
   return (
-    <div className="fixed bottom-20 right-4 sm:bottom-6 z-50">
+    <div className="hidden sm:block fixed bottom-6 right-4 z-50">
       {open && (
         <div className="absolute bottom-12 right-0 bg-white rounded-2xl border border-border shadow-xl p-3 flex flex-col gap-2 min-w-[130px]">
           <p className="text-[10px] font-medium text-mauve uppercase tracking-widest px-1 mb-1">Thème</p>
