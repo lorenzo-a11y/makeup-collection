@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, DM_Sans } from 'next/font/google'
 import BottomNav from '@/components/BottomNav'
 import ThemeProvider from '@/components/ThemeProvider'
+import ThemeSelector from '@/components/ThemeSelector'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           {children}
           <BottomNav />
+          <ThemeSelector />
         </ThemeProvider>
       </body>
     </html>
