@@ -59,18 +59,24 @@ export default function ProductCard({ product, onClick, isAdmin }: Props) {
             </div>
           )}
 
-          {/* Bouton valise — toujours visible */}
-          <button
-            onClick={handleToggleVoyage}
-            className="absolute top-3 left-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform"
-            title={inVoyage ? 'Retirer de la valise' : 'Ajouter à la valise'}
-          >
-            <Luggage
-              className="w-4 h-4 transition-colors"
-              fill={inVoyage ? '#B07085' : 'none'}
-              stroke={inVoyage ? '#B07085' : '#D1B5BC'}
-            />
-          </button>
+          {/* Bouton valise — admin seulement, visiteur voit l'indicateur si déjà dedans */}
+          {isAdmin ? (
+            <button
+              onClick={handleToggleVoyage}
+              className="absolute top-3 left-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform"
+              title={inVoyage ? 'Retirer de la valise' : 'Ajouter à la valise'}
+            >
+              <Luggage
+                className="w-4 h-4 transition-colors"
+                fill={inVoyage ? '#B07085' : 'none'}
+                stroke={inVoyage ? '#B07085' : '#D1B5BC'}
+              />
+            </button>
+          ) : inVoyage ? (
+            <div className="absolute top-3 left-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm">
+              <Luggage className="w-4 h-4" fill="#B07085" stroke="#B07085" />
+            </div>
+          ) : null}
 
           {isAdmin ? (
             /* Admin : bouton cœur cliquable */
