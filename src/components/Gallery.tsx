@@ -257,12 +257,51 @@ export default function Gallery({ products, categories, isAdmin }: Props) {
                 ))}
               </div>
             </div>
+            {/* Tri — mobile uniquement */}
+            <div className="w-full sm:hidden">
+              <label className="block text-xs font-medium text-mauve uppercase tracking-widest mb-1.5">Trier par</label>
+              <div className="flex flex-wrap gap-2">
+                {SORT_OPTIONS.map(({ key, label }) => {
+                  const idx = sorts.findIndex(s => s.key === key)
+                  const active = idx !== -1
+                  const dir = active ? sorts[idx].dir : null
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => handleSort(key)}
+                      className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        active
+                          ? 'bg-rose-deep text-white border-rose-deep'
+                          : 'bg-white text-mauve border-border hover:border-rose hover:text-rose-deep'
+                      }`}
+                    >
+                      {label}
+                      {active
+                        ? dir === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
+                        : <ChevronsUpDown className="w-3 h-3 opacity-40" />
+                      }
+                      {active && (
+                        <span role="button" onClick={e => { e.stopPropagation(); removeSort(key) }} className="ml-0.5 hover:opacity-70">
+                          <X className="w-2.5 h-2.5" />
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+                {sorts.length > 0 && (
+                  <button onClick={() => setSorts([])} className="flex items-center gap-1 text-xs text-mauve hover:text-rose-deep transition-colors">
+                    <X className="w-3 h-3" /> Effacer
+                  </button>
+                )}
+              </div>
+            </div>
+
             {activeFiltersCount > 0 && (
               <button
                 onClick={clearFilters}
                 className="self-end flex items-center gap-1 text-xs text-mauve hover:text-rose-deep transition-colors"
               >
-                <X className="w-3.5 h-3.5" /> Effacer
+                <X className="w-3.5 h-3.5" /> Effacer filtres
               </button>
             )}
           </div>
@@ -318,8 +357,8 @@ export default function Gallery({ products, categories, isAdmin }: Props) {
           </div>
         )}
 
-        {/* Barre de tri multi-critères */}
-        <div className="flex items-center gap-2 flex-wrap mb-6">
+        {/* Barre de tri multi-critères — desktop uniquement */}
+        <div className="hidden sm:flex items-center gap-2 flex-wrap mb-6">
           <span className="text-xs text-mauve uppercase tracking-widest font-medium flex-shrink-0">Trier :</span>
           {SORT_OPTIONS.map(({ key, label }) => {
             const idx = sorts.findIndex(s => s.key === key)
