@@ -13,9 +13,10 @@ interface Group extends Category {
 interface Props {
   groups: Group[]
   total: number
+  isAdmin?: boolean
 }
 
-export default function VoyageClient({ groups: initialGroups, total }: Props) {
+export default function VoyageClient({ groups: initialGroups, total, isAdmin }: Props) {
   const [groups, setGroups] = useState(initialGroups)
   const [modalProduct, setModalProduct] = useState<Product | null>(null)
   const [clearing, setClearing] = useState(false)
@@ -65,13 +66,15 @@ export default function VoyageClient({ groups: initialGroups, total }: Props) {
                       )}
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleRemove(product)}
-                    className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-petal transition-colors text-mauve hover:text-rose-deep flex-shrink-0"
-                    title="Retirer de la valise"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
+                  {isAdmin && (
+                    <button
+                      onClick={() => handleRemove(product)}
+                      className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-petal transition-colors text-mauve hover:text-rose-deep flex-shrink-0"
+                      title="Retirer de la valise"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -85,13 +88,15 @@ export default function VoyageClient({ groups: initialGroups, total }: Props) {
             <Plane className="w-4 h-4" />
             <span>{remaining} produit{remaining > 1 ? 's' : ''} dans ta valise</span>
           </div>
-          <button
-            onClick={handleClear}
-            disabled={clearing}
-            className="px-6 py-2.5 rounded-full border border-border text-sm text-mauve hover:bg-petal transition-colors disabled:opacity-50"
-          >
-            {clearing ? 'En cours…' : 'Vider la valise'}
-          </button>
+          {isAdmin && (
+            <button
+              onClick={handleClear}
+              disabled={clearing}
+              className="px-6 py-2.5 rounded-full border border-border text-sm text-mauve hover:bg-petal transition-colors disabled:opacity-50"
+            >
+              {clearing ? 'En cours…' : 'Vider la valise'}
+            </button>
+          )}
         </div>
       )}
 

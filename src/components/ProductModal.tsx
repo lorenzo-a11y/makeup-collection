@@ -26,7 +26,7 @@ export default function ProductModal({ product, onClose, isAdmin, onEdit }: Prop
   if (!product) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
+    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-plum/50 backdrop-blur-sm" />
 
       <div
@@ -40,7 +40,7 @@ export default function ProductModal({ product, onClose, isAdmin, onEdit }: Prop
           <X className="w-4 h-4 text-plum" />
         </button>
 
-        <div className="overflow-y-auto flex-1">
+        <div className="overflow-y-auto flex-1 pb-16 sm:pb-0">
           {product.image_url && (
             <div className="w-full bg-petal">
               <img

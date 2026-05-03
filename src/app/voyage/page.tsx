@@ -9,9 +9,10 @@ export const revalidate = 0
 export default async function VoyagePage() {
   const supabase = await createClient()
 
-  const [{ data: products }, { data: categories }] = await Promise.all([
+  const [{ data: products }, { data: categories }, { data: { user } }] = await Promise.all([
     supabase.from('products').select('*, category:categories(*), shades(*)').eq('in_voyage', true),
     supabase.from('categories').select('*'),
+    supabase.auth.getUser(),
   ])
 
   const all: Product[] = products ?? []
@@ -52,7 +53,7 @@ export default async function VoyagePage() {
             </Link>
           </div>
         ) : (
-          <VoyageClient groups={groups} total={all.length} />
+          <VoyageClient groups={groups} total={all.length} isAdmin={!!user} />
         )}
       </div>
     </div>

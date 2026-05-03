@@ -67,7 +67,7 @@ export default function PresentationMode({ products, startIndex = 0, onClose }: 
   if (!product) return null
 
   return (
-    <div className="fixed inset-0 z-50 bg-plum flex flex-col select-none">
+    <div className="fixed inset-0 z-[60] bg-plum flex flex-col select-none">
 
       {/* Barre du haut — compacte sur mobile */}
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 flex-shrink-0">
