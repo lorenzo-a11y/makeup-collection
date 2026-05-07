@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Plus, Pencil, Trash2, LogOut, Star, Eye, Archive, ArchiveRestore } from 'lucide-react'
+import { Plus, Pencil, Trash2, LogOut, Star, Eye, Archive, ArchiveRestore, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import { logout, deleteProduct, toggleEmpty, deleteCollection } from '@/app/actions'
 import ProductForm from './ProductForm'
@@ -21,6 +21,7 @@ export default function AdminDashboard({ products, categories, collections }: Pr
   const [showCollectionForm, setShowCollectionForm] = useState(false)
   const [editCollection, setEditCollection] = useState<Collection | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [showEpuises, setShowEpuises] = useState(false)
 
   function handleDeleteProduct(id: string) {
     if (!confirm('Supprimer ce produit ?')) return
@@ -82,6 +83,51 @@ export default function AdminDashboard({ products, categories, collections }: Pr
             </button>
           ))}
         </div>
+
+        {/* Produits épuisés */}
+        {tab === 'produits' && (() => {
+          const epuises = products.filter(p => p.is_empty)
+          if (epuises.length === 0) return null
+          return (
+            <div className="mb-4 bg-white rounded-2xl border border-amber-200 overflow-hidden">
+              <button
+                onClick={() => setShowEpuises(v => !v)}
+                className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-amber-700 hover:bg-amber-50 transition-colors"
+              >
+                <span className="flex items-center gap-2">
+                  <Archive className="w-4 h-4" />
+                  {epuises.length} produit{epuises.length > 1 ? 's' : ''} épuisé{epuises.length > 1 ? 's' : ''}
+                </span>
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showEpuises ? 'rotate-180' : ''}`} />
+              </button>
+              {showEpuises && (
+                <div className="border-t border-amber-100 divide-y divide-amber-50">
+                  {epuises.map(product => (
+                    <div key={product.id} className="flex items-center gap-3 px-4 py-3">
+                      {product.image_url
+                        ? <img src={product.image_url} alt={product.name} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                        : <div className="w-10 h-10 rounded-lg bg-petal flex items-center justify-center flex-shrink-0 text-lg">{product.category?.icon ?? '💄'}</div>
+                      }
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-mauve uppercase tracking-widest">{product.brand}</p>
+                        <p className="text-sm font-display text-plum truncate">{product.name}</p>
+                        {product.category && <p className="text-xs text-mauve">{product.category.name}</p>}
+                      </div>
+                      <button
+                        onClick={() => handleToggleEmpty(product.id, true)}
+                        disabled={isPending}
+                        title="Marquer comme disponible"
+                        className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-green-50 transition-colors text-amber-600 hover:text-green-600"
+                      >
+                        <ArchiveRestore className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )
+        })()}
 
         {/* Liste produits */}
         {tab === 'produits' && (
